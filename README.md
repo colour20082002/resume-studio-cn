@@ -50,8 +50,8 @@ py -3 scripts/init.py --root "D:\resume"
 #    然后生成 6 份母版 PDF + 一份 Word
 py -3 scripts/build.py all --root "D:\resume"
 
-# 3. 校验页数与关键词
-py -3 scripts/check.py --root "D:\resume" --pages 2 --keywords "客户服务,数据分析"
+# 3. 校验内容体检、页数与关键词（页数默认读 resume.yml 的 pages，缺省 1 页）
+py -3 scripts/check.py --root "D:\resume" --keywords "客户服务,数据分析"
 
 # 4. 打开网页编辑器做微调
 py -3 scripts/editor.py --root "D:\resume"
@@ -88,6 +88,7 @@ contact:
   - 138 0000 0000
   - zhouyutong@example.com
 show_photo: true                    # 是否显示证件照
+pages: 1                            # 期望页数，默认 1（一页优先）；0 表示不校验
 
 summary: 8 年行政与运营经验……        # 一段式概述，80–140 字
 
@@ -135,10 +136,14 @@ certificates:
 | `py -3 scripts/build.py pdf --root <目录>` | 只生成 6 份 PDF |
 | `py -3 scripts/build.py docx --root <目录>` | 只生成 Word |
 | `py -3 scripts/build.py png --root <目录>` | 生成 6 张整页预览截图（`build/preview-*.png`） |
-| `py -3 scripts/check.py --root <目录> --pages 2 --keywords "a,b,c"` | 校验结构 / 页数 / 每页首尾行 / 关键词 |
+| `py -3 scripts/check.py --root <目录> [--pages N] [--keywords "a,b,c"]` | 校验结构 / 内容体检 / 页数 / 每页首尾行 / 关键词 |
 | `py -3 scripts/editor.py --root <目录> [--port 8765] [--no-browser]` | 启动网页编辑器 |
 
 `build.py` 支持 `--out <目录>` 把产物输出到别处，内容目录保持不变。
+
+`check.py` 的页数默认读 `resume.yml` 的 `pages`（缺省 1，一页优先），命令行 `--pages` 可临时覆盖。
+
+除结构错误（退出码非 0）外，还会输出内容体检提醒：量化覆盖率、弱势动词开头（负责/协助/参与）、空话词（精通/认真负责等）、第一人称、条目超长、标签重复、日期格式与倒序、时间重叠、中英文间距、个人邮箱。
 
 ## 版式 / 配色 / 字体
 
@@ -198,7 +203,7 @@ py -3 scripts/editor.py --root "D:\resume" --port 8765
 - 顶部切换版式 / 配色 / 字体，右侧实时预览当前组合的 PDF；
 - 可上传证件照（自动纠正方向、限宽 720），可一键隐藏/显示头像；
 - 「应用更改」只写入 `resume.yml`（自动备份 `resume.yml.bak`）并刷新预览；
-- 「保存并导出 PDF」只生成当前选中的组合，弹出另存为窗口，不覆盖已有母版；
+- 「保存并导出 PDF」只生成当前选中的组合，弹出另存为窗口，不覆盖已有母版；默认文件名 `姓名-岗位-年限`；
 - 「保存并导出 Word」按当前表单内容生成 `.docx` 并另存为。Word 使用固定版式（不随版式/配色/字体变化），便于投递后继续编辑。
 
 预览按需渲染并缓存到 `build/export-<版式>-<配色>-<字体>.pdf`，内容或样式文件改动后会自动重渲。

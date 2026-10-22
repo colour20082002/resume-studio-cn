@@ -433,8 +433,27 @@ async function save(kind = "pdf") {
   }
 }
 
+function yearsOfExperience() {
+  const marks = [];
+  (data.experience || []).forEach(e => {
+    (String(e.date || "").match(/\d{4}\.\d{2}/g) || []).forEach(s => {
+      const [y, m] = s.split(".").map(Number);
+      marks.push(y * 12 + m);
+    });
+  });
+  if (!marks.length) return 0;
+  const now = new Date();
+  const months = now.getFullYear() * 12 + now.getMonth() + 1 - Math.min(...marks);
+  return Math.max(0, Math.floor(months / 12));
+}
+
 function pdfFileName(ext = "pdf") {
-  return `个人简历-${layoutLabel()}-${paletteLabel()}-${fontLabel()}.${ext}`;
+  const years = yearsOfExperience();
+  const parts = [data.name, data.intent, years ? years + "年" : ""]
+    .map(s => String(s || "").replace(/[\\/:*?"<>|]/g, "-").replace(/\s+/g, "")
+      .replace(/-+/g, "-").replace(/^-|-$/g, ""))
+    .filter(Boolean);
+  return `${parts.join("-") || "个人简历"}.${ext}`;
 }
 
 async function saveAs() {

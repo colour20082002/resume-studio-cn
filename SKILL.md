@@ -43,8 +43,9 @@ py -3 scripts/build.py pdf --root "D:\resume"
 py -3 scripts/build.py docx --root "D:\resume"
 py -3 scripts/build.py png --root "D:\resume"
 
-# 3. 校验（页数、每页首尾行、JD 关键词）
-py -3 scripts/check.py --root "D:\resume" --pages 2 --keywords "客户服务,风控,数据分析"
+# 3. 校验（内容体检、页数、每页首尾行、JD 关键词）
+# 页数默认读 resume.yml 的 pages（缺省 1，一页优先），--pages 可临时覆盖
+py -3 scripts/check.py --root "D:\resume" --keywords "客户服务,风控,数据分析"
 
 # 4. 网页编辑器（浏览器里改内容、切版式/配色/字体、导出）
 py -3 scripts/editor.py --root "D:\resume" --port 8765
@@ -60,6 +61,7 @@ intent: 目标岗位 / 方向
 meta: [性别 · 年龄, 政治面貌, 城市, 到岗时间]
 contact: [手机, 邮箱]
 show_photo: true
+pages: 1                             # 期望页数，一页优先；0 不校验
 summary: 一段式自我概述
 competencies: [{label, text}]        # 4–6 条
 experience: [{company, date, role, industry, bullets: [{label, text}]}]
