@@ -120,7 +120,7 @@ class Handler(BaseHTTPRequestHandler):
 
     def do_POST(self):
         path = urlparse(self.path).path
-        if path not in ("/api/save", "/api/export", "/api/photo"):
+        if path not in ("/api/save", "/api/export", "/api/export-docx", "/api/photo"):
             self._send(404, b"not found", "text/plain; charset=utf-8")
             return
         length = int(self.headers.get("Content-Length", 0))
@@ -143,6 +143,10 @@ class Handler(BaseHTTPRequestHandler):
             self.export_one(data, payload.get("layout", DEFAULT_LAYOUT),
                             payload.get("palette", DEFAULT_PALETTE),
                             payload.get("font", DEFAULT_FONT))
+            return
+
+        if path == "/api/export-docx":
+            self.export_docx(data)
             return
 
         with _lock:
@@ -205,6 +209,26 @@ class Handler(BaseHTTPRequestHandler):
                        "application/json; charset=utf-8")
             return
         self._send(200, pdf_bytes, "application/pdf")
+
+    def export_docx(self, data: dict):
+        """按当前表单内容生成 Word，写到 build/ 下临时文件后回传，不覆盖母版。"""
+        try:
+            with _lock:
+                build.DATA = data
+                prev = build.DOCX_OUT
+                build.DOCX_OUT = build.BUILD / "export.docx"
+                try:
+                    build.make_docx()
+                    body = build.DOCX_OUT.read_bytes()
+                finally:
+                    build.DOCX_OUT = prev
+        except Exception as exc:
+            self._send(500, json.dumps({"ok": False, "msg": f"生成失败：{exc}"},
+                                       ensure_ascii=False).encode(),
+                       "application/json; charset=utf-8")
+            return
+        self._send(200, body,
+                   "application/vnd.openxmlformats-officedocument.wordprocessingml.document")
 
 
 def main():

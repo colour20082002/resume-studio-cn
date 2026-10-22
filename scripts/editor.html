@@ -98,10 +98,11 @@
 <header>
   <div class="top">
     <h1>简历编辑器</h1>
-    <span class="tip">改内容点「应用更改」，导出点「保存并导出 PDF」（只生成当前组合）</span>
+    <span class="tip">改内容点「应用更改」，导出可生成当前组合的 PDF 或 Word</span>
     <span class="sp"></span>
     <button id="applyBtn" onclick="applyChanges()">应用更改</button>
-    <button class="primary" id="saveBtn" onclick="save()">保存并导出 PDF</button>
+    <button class="primary" id="docxBtn" onclick="save('docx')">保存并导出 Word</button>
+    <button class="primary" id="saveBtn" onclick="save('pdf')">保存并导出 PDF</button>
   </div>
   <div class="bar">
     <span class="bar-label">版式</span>
@@ -373,9 +374,11 @@ function toast(msg, ok) {
   el.style.display = "block";
 }
 
-async function save() {
-  const btn = $("#saveBtn");
-  const name = pdfFileName();
+async function save(kind = "pdf") {
+  const isPdf = kind === "pdf";
+  const btn = isPdf ? $("#saveBtn") : $("#docxBtn");
+  const label = btn.textContent;
+  const name = pdfFileName(kind);
   let handle = null;
 
   /* 先弹系统「另存为」窗口，自选目录和文件名 */
@@ -383,7 +386,10 @@ async function save() {
     try {
       handle = await window.showSaveFilePicker({
         suggestedName: name,
-        types: [{ description: "PDF 文件", accept: { "application/pdf": [".pdf"] } }],
+        types: [isPdf
+          ? { description: "PDF 文件", accept: { "application/pdf": [".pdf"] } }
+          : { description: "Word 文档",
+              accept: { "application/vnd.openxmlformats-officedocument.wordprocessingml.document": [".docx"] } }],
       });
     } catch (e) {
       if (e.name === "AbortError") return;
@@ -394,7 +400,7 @@ async function save() {
   btn.disabled = true;
   btn.textContent = "生成中…";
   try {
-    const r = await fetch("/api/export", {
+    const r = await fetch(isPdf ? "/api/export" : "/api/export-docx", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ data, layout, palette, font }),
@@ -423,12 +429,12 @@ async function save() {
     toast("导出失败：" + e.message, false);
   } finally {
     btn.disabled = false;
-    btn.textContent = "保存并导出 PDF";
+    btn.textContent = label;
   }
 }
 
-function pdfFileName() {
-  return `个人简历-${layoutLabel()}-${paletteLabel()}-${fontLabel()}.pdf`;
+function pdfFileName(ext = "pdf") {
+  return `个人简历-${layoutLabel()}-${paletteLabel()}-${fontLabel()}.${ext}`;
 }
 
 async function saveAs() {
