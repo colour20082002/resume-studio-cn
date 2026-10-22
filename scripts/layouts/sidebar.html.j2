@@ -1,0 +1,53 @@
+<div class="page sp-page">
+  <table class="sp">
+    <tr>
+      <td class="sp-side">
+        {% if d.get('show_photo', true) %}<div class="sp-photo"><img src="photo.png" alt=""></div>{% endif %}
+        <div class="sp-name">{{ d.name }}</div>
+        <div class="sp-intent">{{ d.intent }}</div>
+
+        <h3 class="sp-h">联系方式</h3>
+        <ul class="sp-list">
+          {% for m in d.meta %}<li>{{ m }}</li>{% endfor %}
+          {% for c in d.contact %}<li>{{ c }}</li>{% endfor %}
+        </ul>
+
+        <h3 class="sp-h">核心能力</h3>
+        <ul class="sp-comp">
+          {% for c in d.competencies %}
+          <li><span class="k">{{ c.label }}</span><span class="v">{{ c.text }}</span></li>
+          {% endfor %}
+        </ul>
+
+        <h3 class="sp-h">证书资质</h3>
+        <ul class="sp-list">
+          {% for c in d.certificates %}<li>{{ c }}</li>{% endfor %}
+        </ul>
+      </td>
+      <td class="sp-main">
+        <h2 class="sec"><span class="zh">自我概述</span><span class="en">SUMMARY</span><span class="line"></span></h2>
+        <p class="summary">{{ d.summary }}</p>
+
+        <h2 class="sec"><span class="zh">工作经历</span><span class="en">EXPERIENCE</span><span class="line"></span></h2>
+        {% for e in d.experience %}
+        <section class="entry">
+          <div class="erow"><span class="co">{{ e.company }}</span><span class="date">{{ e.date }}</span></div>
+          <div class="role">{{ e.role }}<span class="sep">/</span>{{ e.industry }}</div>
+          <ul class="bullets">
+            {% for b in e.bullets %}
+            <li><b>{{ b.label }}</b>：{{ b.text }}</li>
+            {% endfor %}
+          </ul>
+        </section>
+        {% endfor %}
+
+        <h2 class="sec"><span class="zh">教育经历</span><span class="en">EDUCATION</span><span class="line"></span></h2>
+        {% for e in d.education %}
+        <div class="erow"><span class="co">{{ e.school }}</span><span class="date">{{ e.date }}</span></div>
+        <div class="role">{{ e.major }}<span class="sep">/</span>{{ e.degree }}</div>
+        <p class="edu-detail">{{ e.detail }}</p>
+        {% endfor %}
+      </td>
+    </tr>
+  </table>
+</div>

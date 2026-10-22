@@ -1,0 +1,38 @@
+/* 时间轴：日期左置 + 竖线圆点节点 */
+@page { size: A4; margin: 14mm 15mm 12mm 15mm; }
+
+.tl-page .head-rule { height: .8pt; }
+.tl-page .sec { margin: var(--sec-top) 0 7pt; }
+.tl-page .sec .num { font-size: 7.4pt; }
+
+.tl-item {
+  position: relative; padding-left: 30mm;
+}
+.tl-when {
+  position: absolute; left: 0; top: 2.2pt; width: 27mm; white-space: nowrap;
+  font-family: var(--num-font); font-size: 7.9pt;
+  color: var(--date-color); letter-spacing: .02em;
+}
+.tl-body {
+  position: relative; border-left: .8pt solid var(--rule);
+  padding: 0 0 9pt 13pt;
+}
+.tl-body::before {
+  content: ""; position: absolute; left: -3pt; top: 3.6pt;
+  width: 5pt; height: 5pt; border-radius: 50%;
+  background: #fff; border: 1pt solid var(--accent);
+}
+.tl-body-last { border-left-color: transparent; padding-bottom: 2pt; }
+.tl-body-last::before { border-color: var(--accent); background: var(--accent); }
+.tl-body .co { display: block; }
+.tl-body .date { display: none; }
+
+.tl-comp { columns: 2; column-gap: 18pt; }
+.tl-comp li {
+  display: block; position: relative; break-inside: avoid;
+  padding: 2pt 0 2pt 9pt;
+}
+.tl-comp li::before {
+  content: ""; position: absolute; left: 0; top: .68em;
+  width: 3pt; height: 3pt; background: var(--accent);
+}

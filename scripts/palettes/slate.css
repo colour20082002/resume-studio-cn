@@ -1,0 +1,33 @@
+/* 烟灰：克制安静 */
+:root {
+  --ink: #3D444C;
+  --text: #4A5057;
+  --muted: #8A9199;
+  --contact: #5A6169;
+  --accent: #6C7681;
+  --accent-muted: #B6BCC3;
+  --rule: #E4E6E8;
+  --date-color: #7C858E;
+  --marker: #B9C0C7;
+  --meta-sep: #D2D6DA;
+  --tint: #F2F3F5;
+  --panel-bg: #46515B;
+  --panel-ink: #F5F6F8;
+  --panel-muted: #C0C6CD;
+  --panel-line: #5F6B76;
+  --name-size: 28pt;
+  --name-ls: 1.5pt;
+  --name-weight: 500;
+  --intent-size: 10pt;
+  --label-size: 8.4pt;
+  --body-size: 10pt;
+  --line: 1.85;
+  --sec-top: 18pt;
+  --sec-bot: 7pt;
+  --entry-gap: 13pt;
+  --bullet-gap: 2.6pt;
+  --comp-gap: 2.6pt;
+  --head-rule-h: .6pt;
+  --head-rule-gap: 13pt;
+  --screen-bg: #EDEEEF;
+}

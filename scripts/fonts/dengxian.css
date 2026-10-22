@@ -1,0 +1,7 @@
+/* 等线清爽：全等线字族，字形窄、笔画匀，视觉比雅黑轻一档 */
+:root {
+  --display-font: "DengXian", "等线", "Microsoft YaHei", sans-serif;
+  --head-font: "DengXian", "等线", "Microsoft YaHei", sans-serif;
+  --body-font: "DengXian", "等线", "Microsoft YaHei", sans-serif;
+  --num-font: Georgia, "Times New Roman", serif;
+}

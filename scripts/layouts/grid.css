@@ -1,0 +1,44 @@
+/* 卡片色块：页首色线 + 实心章节条 + 能力卡片 + 经历卡片 */
+@page { size: A4; margin: 12mm 14mm 11mm 14mm; }
+
+.gd-head {
+  display: flex; align-items: center; gap: 12pt;
+  padding-bottom: 7pt; border-bottom: 2.4pt solid var(--accent);
+}
+.gd-photo img {
+  display: block; width: 23mm; height: 31mm; object-fit: cover;
+  border: .6pt solid var(--rule);
+}
+.gd-id { flex: 1 1 auto; }
+.gd-id .name { font-size: 27pt; }
+.gd-id .intent { margin-top: 5pt; }
+.gd-id .meta { margin-top: 6pt; }
+
+.sec-card {
+  background: var(--ink); color: var(--panel-ink);
+  padding: 4pt 10pt; margin: 11pt 0 7pt;
+}
+.sec-card .num { color: var(--panel-muted); font-size: 7pt; margin-right: 7pt; }
+.sec-card .zh { color: var(--panel-ink); font-size: 10.6pt; letter-spacing: .14em; }
+.sec-card .en { color: var(--panel-muted); margin-left: auto; letter-spacing: .22em; }
+.sec-card .line { display: none; }
+
+.comp-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 4.5pt 6pt; }
+.comp-cards li {
+  display: block; background: var(--tint);
+  border-top: 1.6pt solid var(--accent); padding: 4pt 8pt 4.5pt;
+  break-inside: avoid;
+}
+.comp-cards .k { display: block; font-size: 8.8pt; letter-spacing: .06em; }
+.comp-cards .v { display: block; margin-top: 1pt; font-size: 8.4pt; line-height: 1.55; color: var(--text); }
+
+.job {
+  background: var(--tint); border-left: 2.2pt solid var(--accent);
+  padding: 5.5pt 9pt; margin-bottom: 6.5pt;
+}
+.job .co { font-size: 10.2pt; }
+.job .role { margin-top: 1.5pt; }
+.job .bullets { margin-top: 3pt; }
+.job .bullets li:last-child { margin-bottom: 0; }
+.job-edu .edu-detail { margin-bottom: 2pt; }
+.job-edu .cert { margin-top: 4pt; padding-top: 6pt; }

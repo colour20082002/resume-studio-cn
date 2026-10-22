@@ -1,0 +1,38 @@
+/* 顶部色带：深色页首块 + 章节色块标签 + 双列能力 */
+@page { size: A4; margin: 13mm 14mm 12mm 14mm; }
+
+.bn-head {
+  display: flex; justify-content: space-between; align-items: center;
+  background: var(--panel-bg); color: var(--panel-ink);
+  padding: 8mm 10mm;
+}
+.bn-name {
+  margin: 0; font-family: var(--display-font); font-size: 26pt; font-weight: 600;
+  letter-spacing: 2.2pt; color: var(--panel-ink); line-height: 1.2;
+}
+.bn-intent { margin-top: 6pt; font-size: 10pt; letter-spacing: .06em; color: var(--panel-ink); }
+.bn-meta {
+  margin: 5pt 0 0; padding: 0; list-style: none;
+  font-size: 8.5pt; letter-spacing: .04em; color: var(--panel-muted);
+}
+.bn-meta li { display: inline; }
+.bn-meta li + li::before { content: "｜"; margin: 0 5pt; color: var(--panel-line); }
+.bn-photo { flex: 0 0 auto; margin-left: 12pt; }
+.bn-photo img {
+  display: block; width: 26mm; height: 34mm; object-fit: cover;
+  border: 1.2pt solid var(--panel-ink); border-radius: 1pt;
+}
+
+.bn-page .sec {
+  background: var(--tint); padding: 4.5pt 9pt;
+  margin: 13pt 0 8pt;
+}
+.bn-page .sec .num { font-size: 7.4pt; margin-right: 8pt; }
+.bn-page .sec .zh { font-size: 11pt; letter-spacing: .14em; }
+.bn-page .sec .en { margin-left: 8pt; }
+.bn-page .sec .line { display: none; }
+
+.comp-2 { display: grid; grid-template-columns: 1fr 1fr; column-gap: 14pt; }
+.comp-2 li { display: block; padding: 1.6pt 0; }
+.comp-2 .k { display: inline; margin-right: 4pt; font-size: 9.2pt; }
+.comp-2 .v { display: inline; font-size: 9pt; }

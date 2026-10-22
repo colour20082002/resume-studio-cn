@@ -1,0 +1,26 @@
+/* 居中典雅：居中页首与章节，两侧细线对称 */
+@page { size: A4; margin: 13mm 18mm 12mm 18mm; }
+
+.ct-head { text-align: center; }
+.ct-photo { display: flex; justify-content: center; margin-bottom: 9pt; }
+.ct-photo img {
+  width: 21mm; height: 27mm; object-fit: cover; padding: 1.6pt;
+  background: #fff; border: .8pt solid var(--accent);
+}
+.ct-page .name { font-size: 24pt; letter-spacing: 5pt; }
+.ct-page .intent { margin-top: 6pt; font-size: 10.2pt; }
+.ct-page .meta { margin-top: 6pt; }
+.ct-rule { width: 34pt; height: 1.4pt; background: var(--accent); margin: 9pt auto 0; }
+
+.ct-page .sec-center { justify-content: center; margin: 15pt 0 7pt; }
+.sec-center .num, .sec-center .en, .sec-center .line { display: none; }
+.sec-center::before, .sec-center::after {
+  content: ""; width: 26pt; height: 0;
+  border-top: .6pt solid var(--rule); margin: 0 12pt;
+}
+.sec-center .zh { font-size: 11.4pt; letter-spacing: .26em; }
+
+.ct-page .bullets li::before {
+  width: 3pt; height: 3pt; border-radius: 0; transform: rotate(45deg);
+}
+.ct-comp { margin-top: 2pt; }

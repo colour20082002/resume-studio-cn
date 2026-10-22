@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>简历编辑器</title>
+<style>
+  :root { --ink:#1B2228; --gold:#A8894F; --line:#E3E1DC; --bg:#F4F2ED; }
+  * { box-sizing: border-box; }
+  body {
+    margin:0; font-family:"Microsoft YaHei","PingFang SC",sans-serif;
+    background:var(--bg); color:#33383D; font-size:13px;
+  }
+  header {
+    position:sticky; top:0; z-index:10;
+    background:#fff; border-bottom:1px solid var(--line);
+  }
+  header .top { display:flex; align-items:center; gap:14px; padding:10px 20px; }
+  header h1 { margin:0; font-size:15px; letter-spacing:.08em; color:var(--ink); font-weight:600; }
+  header .tip { color:#8A8F95; font-size:12px; }
+  header .sp { flex:1; }
+  .bar {
+    display:flex; align-items:center; gap:10px; flex-wrap:wrap;
+    padding:8px 20px 9px; background:#FBFAF7; border-top:1px solid var(--line);
+  }
+  .bar-label { color:#8A8F95; font-size:12px; letter-spacing:.14em; }
+  .bar .divider { width:1px; height:16px; background:var(--line); margin:0 4px; }
+  .chips { display:flex; gap:6px; flex-wrap:wrap; }
+  .chips button { padding:4px 11px; font-size:12.5px; border-radius:999px; }
+  .chips button.on { background:var(--ink); border-color:var(--ink); color:#fff; }
+  .sws button { display:inline-flex; align-items:center; gap:6px; padding:3px 10px 3px 7px; border-radius:999px; font-size:12.5px; }
+  .sws i { width:11px; height:11px; border-radius:50%; display:inline-block; border:1px solid rgba(0,0,0,.12); }
+  .sws button.on { border-color:#B9A98C; box-shadow:inset 0 0 0 1px #B9A98C; background:#fff; }
+  button {
+    font-family:inherit; font-size:12.5px; padding:7px 14px; cursor:pointer;
+    border:1px solid var(--line); border-radius:4px; background:#fff; color:#3A3F45;
+  }
+  button:hover { border-color:#C9C3B6; }
+  button.primary { background:var(--ink); border-color:var(--ink); color:#fff; }
+  button.primary:disabled { opacity:.6; cursor:default; }
+  button.mini { padding:3px 8px; font-size:12px; color:#8A8F95; }
+  button.mini:hover { color:#B4553F; border-color:#E2C9C2; }
+
+  main { display:grid; grid-template-columns:minmax(460px, 1fr) minmax(440px, 0.95fr); gap:18px; padding:18px 20px 60px; }
+  .form { display:flex; flex-direction:column; gap:14px; }
+  .card { background:#fff; border:1px solid var(--line); border-radius:6px; padding:14px 16px 16px; }
+  .card > h2 {
+    margin:0 0 12px; font-size:12px; font-weight:600; letter-spacing:.14em;
+    color:var(--gold); display:flex; align-items:center; gap:8px;
+  }
+  .card > h2::after { content:""; flex:1; height:0; border-top:1px solid var(--line); }
+  .row { display:grid; grid-template-columns:auto 1fr; align-items:center; gap:10px; margin-bottom:9px; }
+  .row > label { color:#6C7177; font-size:12.5px; white-space:nowrap; }
+  input[type=text], textarea {
+    width:100%; padding:6px 9px; font-family:inherit; font-size:12.5px; line-height:1.7;
+    color:#2F3439; border:1px solid #DEDBD5; border-radius:4px; background:#FDFCFA;
+  }
+  input[type=text]:focus, textarea:focus { outline:none; border-color:#C0A265; background:#fff; }
+  textarea { resize:vertical; }
+  .grid2 { display:grid; grid-template-columns:1fr 1fr; gap:9px; }
+  .item { border:1px solid #EDEBE6; border-radius:5px; padding:10px 11px; margin-bottom:10px; background:#FCFBF9; }
+  .item-head { display:flex; align-items:center; gap:8px; margin-bottom:8px; }
+  .item-head .idx { font-size:11px; color:#B0A894; letter-spacing:.1em; }
+  .item-head .sp { flex:1; }
+  .bullet { display:grid; grid-template-columns:110px 1fr auto; gap:8px; align-items:start; margin-bottom:8px; }
+  .bullet textarea { min-height:34px; }
+  .add { margin-top:2px; }
+  .status { position:fixed; right:20px; bottom:18px; max-width:520px; padding:10px 14px;
+    border-radius:6px; font-size:12.5px; line-height:1.6; white-space:pre-wrap;
+    background:#fff; border:1px solid var(--line); box-shadow:0 6px 24px rgba(0,0,0,.12); display:none; }
+  .status.ok { border-color:#BFD8C6; }
+  .status.err { border-color:#E6C4BB; color:#8C3B2A; }
+  .preview { position:sticky; top:126px; height:calc(100vh - 146px); display:flex; flex-direction:column;
+    background:#fff; border:1px solid var(--line); border-radius:6px; overflow:hidden; }
+  .pvbar { display:flex; align-items:center; gap:10px; padding:8px 12px; border-bottom:1px solid var(--line); background:#FBFAF7; }
+  .pvbar .now { font-size:12px; color:#6C7177; letter-spacing:.04em; }
+  .pvbar .sp { flex:1; }
+  .pvbar button { background:#fff; border:1px solid var(--line); padding:4px 10px; }
+  .preview iframe { flex:1; width:100%; border:none; }
+  .loading { position:absolute; inset:38px 0 0; display:none; flex-direction:column;
+    align-items:center; justify-content:center; gap:10px; z-index:2;
+    background:rgba(255,255,255,.94); color:#6C7177; font-size:12.5px; letter-spacing:.04em; }
+  .loading.show { display:flex; }
+  .loading .ring { width:22px; height:22px; border:2px solid #E3E1DA; border-top-color:#8C8577;
+    border-radius:50%; animation:spin .8s linear infinite; }
+  .loading .sub { color:#A0A5AA; font-size:11.5px; }
+  @keyframes spin { to { transform:rotate(360deg); } }
+  .hint { color:#989DA3; font-size:11.5px; margin-top:6px; }
+  .photo-row { display:flex; align-items:center; gap:12px; margin:6px 0 10px; }
+  .photo-row img { width:60px; height:80px; object-fit:cover; border:1px solid var(--line);
+    border-radius:4px; background:#F4F2ED; }
+  .photo-row button { padding:4px 10px; font-size:12px; }
+  .photo-toggle { display:flex; align-items:center; gap:5px; margin:6px 0 2px;
+    font-size:12px; color:#6C7177; cursor:pointer; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="top">
+    <h1>简历编辑器</h1>
+    <span class="tip">改内容点「应用更改」，导出点「保存并导出 PDF」（只生成当前组合）</span>
+    <span class="sp"></span>
+    <button id="applyBtn" onclick="applyChanges()">应用更改</button>
+    <button class="primary" id="saveBtn" onclick="save()">保存并导出 PDF</button>
+  </div>
+  <div class="bar">
+    <span class="bar-label">版式</span>
+    <div class="chips" id="layouts"></div>
+    <span class="divider"></span>
+    <span class="bar-label">配色</span>
+    <div class="chips sws" id="palettes"></div>
+  </div>
+  <div class="bar">
+    <span class="bar-label">字体</span>
+    <div class="chips" id="fonts"></div>
+  </div>
+</header>
+
+<main>
+  <div class="form" id="form"></div>
+
+  <div class="preview">
+    <div class="pvbar">
+      <span class="now" id="now">当前版式</span>
+      <span class="sp"></span>
+      <button class="mini" onclick="saveAs()">另存当前版本…</button>
+    </div>
+    <iframe id="pv" src="about:blank"></iframe>
+    <div class="loading" id="loading">
+      <div class="ring"></div>
+      <div>预览生成中，请稍候…</div>
+      <div class="sub">首次切到某个组合约需 2–4 秒</div>
+    </div>
+  </div>
+</main>
+
+<div class="status" id="status"></div>
+
+<script>
+let data = null;
+let layouts = [];
+let palettes = [];
+let fonts = [];
+let layout = "classic";
+let palette = "ink";
+let font = "songhei";
+
+const $ = (s, r = document) => r.querySelector(s);
+const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) =>
+  ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+
+function setPath(path, value) {
+  const keys = path.split(".");
+  let obj = data;
+  for (let i = 0; i < keys.length - 1; i++) obj = obj[keys[i]];
+  obj[keys[keys.length - 1]] = value;
+}
+
+function getPath(path) {
+  return path.split(".").reduce((o, k) => (o == null ? "" : o[k]), data) ?? "";
+}
+
+/* ---------------- 表单渲染 ---------------- */
+function field(label, path, value, big) {
+  const tag = big
+    ? `<textarea data-path="${path}" rows="${big}">${esc(value)}</textarea>`
+    : `<input type="text" data-path="${path}" value="${esc(value)}">`;
+  return `<div class="row"><label>${label}</label>${tag}</div>`;
+}
+
+function textareaRow(label, arrName, list) {
+  return `<div class="row" style="align-items:start">
+    <label style="padding-top:6px">${label}</label>
+    <div><textarea data-arr="${arrName}" rows="3">${esc(list.join("\n"))}</textarea>
+    <div class="hint">一行一条</div></div></div>`;
+}
+
+function render() {
+  const d = data;
+  let html = "";
+
+  html += `<section class="card"><h2>基本信息</h2>
+    <div class="photo-row">
+      <img id="photoPrev" src="/photo" alt="" onerror="this.style.visibility='hidden'">
+      <div>
+        <button type="button" onclick="document.getElementById('photoFile').click()">上传 / 更换照片</button>
+        <label class="photo-toggle"><input type="checkbox" id="showPhoto"
+          ${d.show_photo === false ? "" : "checked"} onchange="togglePhoto(this.checked)"> 显示头像</label>
+        <div class="hint">JPG / PNG，建议竖版证件照</div>
+      </div>
+      <input type="file" id="photoFile" accept="image/*" hidden onchange="uploadPhoto(this)">
+    </div>
+    ${field("姓名", "name", d.name)}
+    ${field("求职意向", "intent", d.intent)}
+    ${textareaRow("基本信息", "meta", d.meta || [])}
+    ${textareaRow("联系方式", "contact", d.contact || [])}
+  </section>`;
+
+  html += `<section class="card"><h2>自我概述</h2>
+    ${field("", "summary", d.summary, 5)}
+  </section>`;
+
+  html += `<section class="card"><h2>核心能力</h2>`;
+  (d.competencies || []).forEach((c, i) => {
+    html += `<div class="bullet" style="grid-template-columns:110px 1fr auto">
+      <input type="text" data-path="competencies.${i}.label" value="${esc(c.label)}">
+      <input type="text" data-path="competencies.${i}.text" value="${esc(c.text)}">
+      <button class="mini" data-act="del" data-list="competencies" data-i="${i}">删除</button>
+    </div>`;
+  });
+  html += `<button class="add" data-act="add" data-list="competencies">+ 增加能力项</button></section>`;
+
+  html += `<section class="card"><h2>工作经历</h2>`;
+  (d.experience || []).forEach((e, i) => {
+    html += `<div class="item">
+      <div class="item-head"><span class="idx">经历 ${i + 1}</span><span class="sp"></span>
+        <button class="mini" data-act="del" data-list="experience" data-i="${i}">删除该段</button></div>
+      ${field("公司", `experience.${i}.company`, e.company)}
+      <div class="grid2">
+        <div class="row"><label>时间段</label><input type="text" data-path="experience.${i}.date" value="${esc(e.date)}"></div>
+        <div class="row"><label>岗位</label><input type="text" data-path="experience.${i}.role" value="${esc(e.role)}"></div>
+      </div>
+      ${field("行业", `experience.${i}.industry`, e.industry)}
+      <div class="hint" style="margin:10px 0 8px">职责条目（左侧为加粗小标题，右侧为内容）</div>`;
+    (e.bullets || []).forEach((b, j) => {
+      html += `<div class="bullet">
+        <input type="text" data-path="experience.${i}.bullets.${j}.label" value="${esc(b.label)}">
+        <textarea data-path="experience.${i}.bullets.${j}.text" rows="2">${esc(b.text)}</textarea>
+        <button class="mini" data-act="del" data-list="experience.${i}.bullets" data-i="${j}">×</button>
+      </div>`;
+    });
+    html += `<button class="add" data-act="add" data-list="experience.${i}.bullets">+ 增加职责</button>
+    </div>`;
+  });
+  html += `<button class="add" data-act="add" data-list="experience">+ 增加一段经历</button></section>`;
+
+  html += `<section class="card"><h2>教育经历</h2>`;
+  (d.education || []).forEach((e, i) => {
+    html += `<div class="item">
+      <div class="item-head"><span class="idx">教育 ${i + 1}</span><span class="sp"></span>
+        <button class="mini" data-act="del" data-list="education" data-i="${i}">删除</button></div>
+      ${field("学校", `education.${i}.school`, e.school)}
+      <div class="grid2">
+        <div class="row"><label>时间段</label><input type="text" data-path="education.${i}.date" value="${esc(e.date)}"></div>
+        <div class="row"><label>学历</label><input type="text" data-path="education.${i}.degree" value="${esc(e.degree)}"></div>
+      </div>
+      ${field("专业", `education.${i}.major`, e.major)}
+      ${field("主修", `education.${i}.detail`, e.detail, 3)}
+    </div>`;
+  });
+  html += `<button class="add" data-act="add" data-list="education">+ 增加教育经历</button></section>`;
+
+  html += `<section class="card"><h2>证书资质</h2>
+    ${textareaRow("证书", "certificates", d.certificates || [])}
+  </section>`;
+
+  $("#form").innerHTML = html;
+}
+
+/* ---------------- 事件 ---------------- */
+$("#form").addEventListener("input", (ev) => {
+  const el = ev.target;
+  if (el.dataset.path) setPath(el.dataset.path, el.value);
+  else if (el.dataset.arr) data[el.dataset.arr] = el.value.split("\n").map((s) => s.trim()).filter(Boolean);
+});
+
+$("#form").addEventListener("click", (ev) => {
+  const btn = ev.target.closest("button[data-act]");
+  if (!btn) return;
+  const { act, list } = btn.dataset;
+  const i = Number(btn.dataset.i);
+  if (act === "del") {
+    const keys = list.split(".");
+    let arr = data;
+    for (let k = 0; k < keys.length; k++) arr = arr[keys[k]];
+    arr.splice(i, 1);
+  } else {
+    const keys = list.split(".");
+    let arr = data;
+    for (let k = 0; k < keys.length; k++) arr = arr[keys[k]];
+    if (list === "competencies") arr.push({ label: "新能力", text: "" });
+    else if (list === "experience") arr.push({ company: "", date: "", role: "", industry: "", bullets: [{ label: "", text: "" }] });
+    else if (list === "education") arr.push({ school: "", date: "", major: "", degree: "", detail: "" });
+    else arr.push({ label: "新条目", text: "" });
+  }
+  render();
+});
+
+function renderSelectors() {
+  $("#layouts").innerHTML = layouts.map((t) =>
+    `<button data-layout="${t.key}" class="${t.key === layout ? "on" : ""}">${esc(t.label)}</button>`
+  ).join("");
+  $("#palettes").innerHTML = palettes.map((t) =>
+    `<button data-palette="${t.key}" class="${t.key === palette ? "on" : ""}">` +
+    `<i style="background:${t.color}"></i>${esc(t.label)}</button>`
+  ).join("");
+  $("#fonts").innerHTML = fonts.map((t) =>
+    `<button data-font="${t.key}" class="${t.key === font ? "on" : ""}">${esc(t.label)}</button>`
+  ).join("");
+
+  document.querySelectorAll("#layouts button").forEach((b) => {
+    b.onclick = () => {
+      layout = b.dataset.layout;
+      renderSelectors();
+      refreshPreview();
+    };
+  });
+  document.querySelectorAll("#palettes button").forEach((b) => {
+    b.onclick = () => {
+      palette = b.dataset.palette;
+      renderSelectors();
+      refreshPreview();
+    };
+  });
+  document.querySelectorAll("#fonts button").forEach((b) => {
+    b.onclick = () => {
+      font = b.dataset.font;
+      renderSelectors();
+      refreshPreview();
+    };
+  });
+  $("#now").textContent =
+    `当前：${layoutLabel()} · ${paletteLabel()} · ${fontLabel()}`;
+}
+
+function layoutLabel() {
+  return (layouts.find((x) => x.key === layout) || {}).label || layout;
+}
+
+function paletteLabel() {
+  return (palettes.find((x) => x.key === palette) || {}).label || palette;
+}
+
+function fontLabel() {
+  return (fonts.find((x) => x.key === font) || {}).label || font;
+}
+
+let previewSeq = 0;
+
+function setLoading(on) {
+  $("#loading").classList.toggle("show", on);
+}
+
+async function refreshPreview(stamp) {
+  const seq = ++previewSeq;
+  const url = `/draft?layout=${layout}&palette=${palette}&font=${font}&t=${stamp ?? Date.now()}`;
+  setLoading(true);
+  try {
+    /* 先等 PDF 生成完（首次约 2–4 秒），再把 iframe 指过去，避免转圈提前结束 */
+    const r = await fetch(url);
+    if (!r.ok) throw new Error((await r.text()) || ("HTTP " + r.status));
+    if (seq !== previewSeq) return;
+
+    /* 重建 iframe：只改 src 时内置 PDF 查看器可能不重绘 */
+    const old = $("#pv");
+    const frame = document.createElement("iframe");
+    frame.id = "pv";
+    frame.src = url;
+    frame.addEventListener("load", () => { if (seq === previewSeq) setLoading(false); });
+    old.replaceWith(frame);
+    setTimeout(() => { if (seq === previewSeq) setLoading(false); }, 1200);
+  } catch (e) {
+    if (seq !== previewSeq) return;
+    setLoading(false);
+    toast("预览生成失败：" + e.message, false);
+  }
+}
+
+function toast(msg, ok) {
+  const el = $("#status");
+  el.textContent = msg;
+  el.className = "status " + (ok ? "ok" : "err");
+  el.style.display = "block";
+}
+
+async function save() {
+  const btn = $("#saveBtn");
+  const name = pdfFileName();
+  let handle = null;
+
+  /* 先弹系统「另存为」窗口，自选目录和文件名 */
+  if (window.showSaveFilePicker) {
+    try {
+      handle = await window.showSaveFilePicker({
+        suggestedName: name,
+        types: [{ description: "PDF 文件", accept: { "application/pdf": [".pdf"] } }],
+      });
+    } catch (e) {
+      if (e.name === "AbortError") return;
+      console.warn(e);
+    }
+  }
+
+  btn.disabled = true;
+  btn.textContent = "生成中…";
+  try {
+    const r = await fetch("/api/export", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ data, layout, palette, font }),
+    });
+    if (!r.ok) {
+      const j = await r.json().catch(() => null);
+      toast((j && j.msg) || "生成失败：" + r.status, false);
+      return;
+    }
+    const blob = await r.blob();
+    if (handle) {
+      const w = await handle.createWritable();
+      await w.write(blob);
+      await w.close();
+      toast(`已导出「${handle.name}」`, true);
+    } else {
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = name;
+      a.click();
+      URL.revokeObjectURL(a.href);
+      toast(`已下载「${name}」`, true);
+    }
+    refreshPreview();
+  } catch (e) {
+    toast("导出失败：" + e.message, false);
+  } finally {
+    btn.disabled = false;
+    btn.textContent = "保存并导出 PDF";
+  }
+}
+
+function pdfFileName() {
+  return `个人简历-${layoutLabel()}-${paletteLabel()}-${fontLabel()}.pdf`;
+}
+
+async function saveAs() {
+  try {
+    const handle = await window.showSaveFilePicker({
+      suggestedName: pdfFileName(),
+      types: [{ description: "PDF 文件", accept: { "application/pdf": [".pdf"] } }],
+    });
+    const blob = await (await fetch(
+      `/draft?layout=${layout}&palette=${palette}&font=${font}`)).blob();
+    const w = await handle.createWritable();
+    await w.write(blob);
+    await w.close();
+    toast(`已另存为「${handle.name}」`, true);
+  } catch (e) {
+    if (e.name === "AbortError") return;
+    if (!window.showSaveFilePicker) {
+      const a = document.createElement("a");
+      a.href = `/pdf?layout=${layout}&palette=${palette}&font=${font}`;
+      a.download = pdfFileName();
+      a.click();
+      return;
+    }
+    toast("另存失败：" + e.message, false);
+  }
+}
+
+async function uploadPhoto(input) {
+  const f = input.files && input.files[0];
+  input.value = "";
+  if (!f) return;
+  if (!/^image\//.test(f.type)) { toast("请选择图片文件", false); return; }
+  try {
+    const r = await fetch("/api/photo", {
+      method: "POST",
+      headers: { "Content-Type": f.type },
+      body: f,
+    });
+    const j = await r.json();
+    if (!j.ok) { toast(j.msg || "上传失败：" + r.status, false); return; }
+    const prev = $("#photoPrev");
+    prev.style.visibility = "visible";
+    prev.src = "/photo?t=" + Date.now();
+    toast("照片已更新", true);
+    refreshPreview();
+  } catch (e) {
+    toast("上传失败：" + e.message, false);
+  }
+}
+
+async function togglePhoto(v) {
+  data.show_photo = v;
+  await applyChanges();
+}
+
+async function applyChanges() {
+  const btn = $("#applyBtn");
+  btn.disabled = true;
+  btn.textContent = "应用中…";
+  try {
+    const r = await fetch("/api/save", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ data }),
+    });
+    const j = await r.json();
+    toast(j.ok ? "已应用更改" : j.msg, j.ok);
+    if (j.ok) refreshPreview(j.stamp);
+  } catch (e) {
+    toast("应用失败：" + e.message, false);
+  } finally {
+    btn.disabled = false;
+    btn.textContent = "应用更改";
+  }
+}
+
+(async function init() {
+  const [d, opt] = await Promise.all([
+    fetch("/api/data").then((r) => r.json()),
+    fetch("/api/themes").then((r) => r.json()),
+  ]);
+  data = d;
+  layouts = opt.layouts || [];
+  palettes = opt.palettes || [];
+  fonts = opt.fonts || [];
+  if (opt.defaults) {
+    layout = opt.defaults.layout;
+    palette = opt.defaults.palette;
+    font = opt.defaults.font;
+  }
+  renderSelectors();
+  render();
+  refreshPreview();
+})();
+</script>
+</body>
+</html>

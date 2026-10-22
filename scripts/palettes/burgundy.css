@@ -1,0 +1,33 @@
+/* 绛红：酒红典雅 */
+:root {
+  --ink: #3A1D22;
+  --text: #403A3B;
+  --muted: #7A6C6E;
+  --contact: #5A4A4D;
+  --accent: #7B2E3C;
+  --accent-muted: #B58F95;
+  --rule: #EADFE0;
+  --date-color: #7B2E3C;
+  --marker: #7B2E3C;
+  --meta-sep: #DDCBCE;
+  --tint: #F8EFF0;
+  --panel-bg: #6E2634;
+  --panel-ink: #F9EFF0;
+  --panel-muted: #D8B6BC;
+  --panel-line: #8F4553;
+  --name-size: 29pt;
+  --name-ls: 4pt;
+  --name-weight: 500;
+  --intent-size: 10.8pt;
+  --label-size: 8.6pt;
+  --body-size: 10pt;
+  --line: 1.76;
+  --sec-top: 16pt;
+  --sec-bot: 7pt;
+  --entry-gap: 12pt;
+  --bullet-gap: 2.2pt;
+  --comp-gap: 2.4pt;
+  --head-rule-h: .8pt;
+  --head-rule-gap: 13pt;
+  --screen-bg: #EFE7E8;
+}

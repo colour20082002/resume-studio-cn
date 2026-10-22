@@ -1,0 +1,50 @@
+<div class="page gd-page">
+
+  <header class="gd-head">
+{% if d.get('show_photo', true) %}<div class="gd-photo"><img src="photo.png" alt=""></div>{% endif %}
+    <div class="gd-id">
+      <h1 class="name">{{ d.name }}</h1>
+      <div class="intent"><em>求职意向</em>{{ d.intent }}</div>
+      <ul class="meta">
+        {% for m in d.meta %}<li>{{ m }}</li>{% endfor %}
+      </ul>
+      <ul class="meta meta-contact">
+        {% for c in d.contact %}<li>{{ c }}</li>{% endfor %}
+      </ul>
+    </div>
+  </header>
+
+  <h2 class="sec sec-card"><span class="num">01</span><span class="zh">自我概述</span><span class="en">SUMMARY</span></h2>
+  <p class="summary">{{ d.summary }}</p>
+
+  <h2 class="sec sec-card"><span class="num">02</span><span class="zh">核心能力</span><span class="en">COMPETENCIES</span></h2>
+  <ul class="comp comp-cards">
+    {% for c in d.competencies %}
+    <li><span class="k">{{ c.label }}</span><span class="v">{{ c.text }}</span></li>
+    {% endfor %}
+  </ul>
+
+  <h2 class="sec sec-card"><span class="num">03</span><span class="zh">工作经历</span><span class="en">EXPERIENCE</span></h2>
+  {% for e in d.experience %}
+  <section class="job">
+    <div class="erow"><span class="co">{{ e.company }}</span><span class="date">{{ e.date }}</span></div>
+    <div class="role">{{ e.role }}<span class="sep">/</span>{{ e.industry }}</div>
+    <ul class="bullets">
+      {% for b in e.bullets %}
+      <li><b>{{ b.label }}</b>：{{ b.text }}</li>
+      {% endfor %}
+    </ul>
+  </section>
+  {% endfor %}
+
+  <h2 class="sec sec-card"><span class="num">04</span><span class="zh">教育经历</span><span class="en">EDUCATION</span></h2>
+  <div class="job job-edu">
+    {% for e in d.education %}
+    <div class="erow"><span class="co">{{ e.school }}</span><span class="date">{{ e.date }}</span></div>
+    <div class="role">{{ e.major }}<span class="sep">/</span>{{ e.degree }}</div>
+    <p class="edu-detail">{{ e.detail }}</p>
+    {% endfor %}
+    <div class="cert"><span class="k">证书资质</span><span class="v">{% for c in d.certificates %}<span>{{ c }}</span>{% endfor %}</span></div>
+  </div>
+
+</div>

@@ -1,0 +1,33 @@
+/* 墨绿：沉静克制 */
+:root {
+  --ink: #1F3A30;
+  --text: #39443F;
+  --muted: #6D7A74;
+  --contact: #3E4C46;
+  --accent: #2E5A48;
+  --accent-muted: #9DB3A8;
+  --rule: #E1E7E3;
+  --date-color: #3D6A56;
+  --marker: #2E5A48;
+  --meta-sep: #CCD8D1;
+  --tint: #EFF4F0;
+  --panel-bg: #23453A;
+  --panel-ink: #EDF4F0;
+  --panel-muted: #AFC4B9;
+  --panel-line: #3F6355;
+  --name-size: 27pt;
+  --name-ls: 6pt;
+  --name-weight: 500;
+  --intent-size: 10.4pt;
+  --label-size: 8.4pt;
+  --body-size: 10pt;
+  --line: 1.78;
+  --sec-top: 17pt;
+  --sec-bot: 8pt;
+  --entry-gap: 13pt;
+  --bullet-gap: 2.6pt;
+  --comp-gap: 2.6pt;
+  --head-rule-h: 0;
+  --head-rule-gap: 0;
+  --screen-bg: #EDF1EE;
+}

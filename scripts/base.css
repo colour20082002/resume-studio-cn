@@ -1,0 +1,136 @@
+/* 公共排版骨架：版式与配色都复用这里的类名 */
+
+@page { size: A4; margin: 15mm 16mm 13mm 16mm; }
+
+* { box-sizing: border-box; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+html, body { margin: 0; padding: 0; }
+body {
+  font-family: var(--body-font);
+  font-size: var(--body-size);
+  line-height: var(--line);
+  color: var(--text);
+  -webkit-font-smoothing: antialiased;
+}
+b { font-weight: 600; color: var(--ink); }
+
+.page { width: 210mm; padding: 15mm 16mm 13mm; margin: 0 auto; background: #fff; }
+@media screen {
+  html { background: var(--screen-bg, #ECEAE5); }
+  body { padding: 24px 0; }
+  .page { box-shadow: 0 2px 20px rgba(0, 0, 0, .15); }
+}
+@media print {
+  .page { width: auto; padding: 0; margin: 0; box-shadow: none; }
+}
+
+/* 页首 */
+.head { display: flex; justify-content: space-between; align-items: flex-start; }
+.head-main { order: 1; flex: 1 1 auto; }
+.head-photo { order: 2; flex: 0 0 auto; margin-left: 18pt; }
+.head-photo img {
+  display: block; width: var(--photo-w, 25mm); height: var(--photo-h, 33mm);
+  object-fit: cover; border: var(--photo-border, .6pt solid #D8D5CE);
+}
+.name {
+  margin: 0;
+  font-family: var(--display-font);
+  font-size: var(--name-size);
+  font-weight: var(--name-weight);
+  letter-spacing: var(--name-ls);
+  line-height: 1.16;
+  color: var(--ink);
+}
+.intent {
+  margin-top: 8pt;
+  font-family: var(--head-font);
+  font-size: var(--intent-size, 11.2pt);
+  font-weight: 500;
+  letter-spacing: .04em;
+  color: var(--ink);
+}
+.intent em {
+  font-style: normal; font-size: var(--label-size, 8.8pt); font-weight: 400;
+  color: var(--accent); letter-spacing: .18em; margin-right: 9pt;
+}
+.meta {
+  margin: 9pt 0 0; padding: 0; list-style: none;
+  font-size: 9.2pt; color: var(--muted); letter-spacing: .04em;
+}
+.meta li { display: inline; }
+.meta li + li::before { content: "｜"; margin: 0 5pt; color: var(--meta-sep, #D9D3C7); }
+.meta-contact { margin-top: 1pt; color: var(--contact, #4A4F55); }
+.head-rule { margin: var(--head-rule-gap, 15pt) 0 0; height: var(--head-rule-h, 1.1pt); background: var(--accent); }
+
+/* 章节标题 */
+.sec {
+  display: flex; align-items: center; font-weight: 400;
+  margin: var(--sec-top) 0 var(--sec-bot);
+}
+.sec .num {
+  font-family: var(--num-font); font-size: 8pt; letter-spacing: .12em;
+  color: var(--accent); margin-right: 9pt;
+}
+.sec .zh {
+  font-family: var(--head-font); font-size: var(--sec-size, 12.2pt); font-weight: 600;
+  color: var(--accent); letter-spacing: .16em; white-space: nowrap;
+}
+.sec .en {
+  font-family: var(--num-font); font-size: 6.8pt; color: var(--accent-muted, #B4A184);
+  letter-spacing: .26em; margin-left: 9pt; white-space: nowrap;
+}
+.sec .line {
+  flex: 1 1 auto; height: 0; border-top: .5pt solid var(--rule); margin-left: 10pt;
+}
+
+.summary { margin: 0; text-align: justify; }
+
+/* 核心能力 */
+.comp { margin: 0; padding: 0; list-style: none; }
+.comp li { display: flex; padding: var(--comp-gap, 3pt) 0; }
+.comp .k {
+  flex: 0 0 var(--comp-key-w, 4.8em);
+  font-family: var(--head-font); font-weight: 600; color: var(--ink); letter-spacing: .06em;
+}
+.comp .v { flex: 1 1 auto; }
+
+/* 工作经历 */
+.entry { margin-bottom: var(--entry-gap); }
+.erow {
+  display: flex; align-items: baseline; justify-content: space-between;
+  break-after: avoid; page-break-after: avoid;
+}
+.co {
+  font-family: var(--head-font); font-size: var(--co-size, 10.9pt); font-weight: 600;
+  color: var(--ink); letter-spacing: .03em;
+}
+.date {
+  font-family: var(--num-font); font-size: 8.7pt; color: var(--date-color);
+  letter-spacing: .06em; white-space: nowrap; padding-left: 10pt;
+}
+.role {
+  font-size: 8.9pt; color: var(--muted); margin-top: 2pt; letter-spacing: .06em;
+  break-after: avoid; page-break-after: avoid;
+}
+.role .sep { color: var(--meta-sep, #C9C9C9); margin: 0 5pt; }
+
+.bullets { margin: 4pt 0 0; padding: 0; list-style: none; }
+.bullets li {
+  position: relative; padding-left: 11pt; margin-bottom: var(--bullet-gap);
+  text-align: justify; break-inside: avoid;
+}
+.bullets li::before {
+  content: ""; position: absolute; left: 1.6pt; top: .74em;
+  width: 2.6pt; height: 2.6pt; border-radius: 50%; background: var(--marker, #C2A468);
+}
+
+/* 教育 / 证书 */
+.edu-detail { margin: 3pt 0 0; text-align: justify; }
+.cert {
+  margin-top: 6pt; padding-top: 8pt; border-top: .5pt solid var(--rule); display: flex;
+}
+.cert .k {
+  flex: 0 0 var(--comp-key-w, 4.8em);
+  font-family: var(--head-font); font-weight: 600; color: var(--ink); letter-spacing: .06em;
+}
+.cert .v { flex: 1 1 auto; }
+.cert .v span + span::before { content: "｜"; color: var(--meta-sep, #D9D3C7); margin: 0 5pt; }

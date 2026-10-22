@@ -1,0 +1,33 @@
+/* 鎏金：宋体标题 + 铜金点缀 */
+:root {
+  --ink: #1B2228;
+  --text: #3A3F45;
+  --muted: #737373;
+  --contact: #4A4F55;
+  --accent: #C0A265;
+  --accent-muted: #B4A184;
+  --rule: #E4E4E4;
+  --date-color: #9C7C46;
+  --marker: #C2A468;
+  --meta-sep: #D9D3C7;
+  --tint: #F8F3E8;
+  --panel-bg: #2B251C;
+  --panel-ink: #F3E9D6;
+  --panel-muted: #C8B695;
+  --panel-line: #574A34;
+  --name-size: 31pt;
+  --name-ls: 3.5pt;
+  --name-weight: 500;
+  --intent-size: 11.2pt;
+  --label-size: 8.8pt;
+  --body-size: 10pt;
+  --line: 1.88;
+  --sec-top: 20pt;
+  --sec-bot: 9pt;
+  --entry-gap: 15pt;
+  --bullet-gap: 2.9pt;
+  --comp-gap: 3pt;
+  --head-rule-h: 1.1pt;
+  --head-rule-gap: 15pt;
+  --screen-bg: #ECEAE5;
+}

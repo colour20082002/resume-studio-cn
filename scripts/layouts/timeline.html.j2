@@ -1,0 +1,60 @@
+<div class="page tl-page">
+
+  <header class="head">
+    <div class="head-main">
+      <h1 class="name">{{ d.name }}</h1>
+      <div class="intent"><em>求职意向</em>{{ d.intent }}</div>
+      <ul class="meta">
+        {% for m in d.meta %}<li>{{ m }}</li>{% endfor %}
+      </ul>
+      <ul class="meta meta-contact">
+        {% for c in d.contact %}<li>{{ c }}</li>{% endfor %}
+      </ul>
+    </div>
+{% if d.get('show_photo', true) %}<div class="head-photo"><img src="photo.png" alt=""></div>{% endif %}
+  </header>
+  <div class="head-rule"></div>
+
+  <h2 class="sec"><span class="num">01</span><span class="zh">自我概述</span><span class="en">SUMMARY</span><span class="line"></span></h2>
+  <p class="summary">{{ d.summary }}</p>
+
+  <h2 class="sec"><span class="num">02</span><span class="zh">核心能力</span><span class="en">COMPETENCIES</span><span class="line"></span></h2>
+  <ul class="comp tl-comp">
+    {% for c in d.competencies %}
+    <li><b>{{ c.label }}</b>　{{ c.text }}</li>
+    {% endfor %}
+  </ul>
+
+  <h2 class="sec"><span class="num">03</span><span class="zh">工作经历</span><span class="en">EXPERIENCE</span><span class="line"></span></h2>
+  <div class="tl">
+    {% for e in d.experience %}
+    <section class="tl-item">
+      <div class="tl-when">{{ e.date }}</div>
+      <div class="tl-body">
+        <div class="co">{{ e.company }}</div>
+        <div class="role">{{ e.role }}<span class="sep">/</span>{{ e.industry }}</div>
+        <ul class="bullets">
+          {% for b in e.bullets %}
+          <li><b>{{ b.label }}</b>：{{ b.text }}</li>
+          {% endfor %}
+        </ul>
+      </div>
+    </section>
+    {% endfor %}
+  </div>
+
+  <h2 class="sec"><span class="num">04</span><span class="zh">教育经历</span><span class="en">EDUCATION</span><span class="line"></span></h2>
+  {% for e in d.education %}
+  <div class="tl-item">
+    <div class="tl-when">{{ e.date }}</div>
+    <div class="tl-body tl-body-last">
+      <div class="co">{{ e.school }}</div>
+      <div class="role">{{ e.major }}<span class="sep">/</span>{{ e.degree }}</div>
+      <p class="edu-detail">{{ e.detail }}</p>
+    </div>
+  </div>
+  {% endfor %}
+
+  <div class="cert"><span class="k">证书资质</span><span class="v">{% for c in d.certificates %}<span>{{ c }}</span>{% endfor %}</span></div>
+
+</div>

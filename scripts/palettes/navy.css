@@ -1,0 +1,33 @@
+/* 黛蓝：藏蓝沉稳商务 */
+:root {
+  --ink: #1C2B3A;
+  --text: #3B4550;
+  --muted: #6B7683;
+  --contact: #3F4A56;
+  --accent: #22405F;
+  --accent-muted: #8FA3B8;
+  --rule: #E0E4E9;
+  --date-color: #32506F;
+  --marker: #32506F;
+  --meta-sep: #C9D1DA;
+  --tint: #EDF1F5;
+  --panel-bg: #1C3A56;
+  --panel-ink: #EEF3F8;
+  --panel-muted: #A9BDCD;
+  --panel-line: #3A5670;
+  --name-size: 30pt;
+  --name-ls: 2.5pt;
+  --name-weight: 600;
+  --intent-size: 11pt;
+  --label-size: 8.6pt;
+  --body-size: 10pt;
+  --line: 1.86;
+  --sec-top: 19pt;
+  --sec-bot: 8pt;
+  --entry-gap: 14pt;
+  --bullet-gap: 2.7pt;
+  --comp-gap: 2.8pt;
+  --head-rule-h: .9pt;
+  --head-rule-gap: 14pt;
+  --screen-bg: #E9EDF1;
+}

@@ -1,0 +1,7 @@
+/* 宋黑对照：衬线标题 + 无衬线正文，层级对比最清晰（推荐默认） */
+:root {
+  --display-font: "Noto Serif SC", "Songti SC", serif;
+  --head-font: "Noto Serif SC", "Songti SC", serif;
+  --body-font: "Microsoft YaHei", "PingFang SC", sans-serif;
+  --num-font: Georgia, "Times New Roman", serif;
+}

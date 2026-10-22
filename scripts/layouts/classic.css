@@ -1,0 +1,4 @@
+/* 经典单栏：编号章节 + 细分隔线 */
+.intent em { letter-spacing: .14em; margin-right: 8pt; }
+.sec .en { letter-spacing: .3em; }
+.date { letter-spacing: .04em; }

@@ -1,0 +1,7 @@
+/* 雅黑现代：单一无衬线字族，信息密度最高，通用稳妥 */
+:root {
+  --display-font: "Microsoft YaHei", "PingFang SC", sans-serif;
+  --head-font: "Microsoft YaHei", "PingFang SC", sans-serif;
+  --body-font: "Microsoft YaHei", "PingFang SC", sans-serif;
+  --num-font: Georgia, "Times New Roman", serif;
+}

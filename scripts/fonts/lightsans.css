@@ -1,0 +1,9 @@
+/* 细黑雅致：华文细黑标题 + 思源黑正文，轻字重分层 */
+:root {
+  --display-font: "STXihei", "华文细黑", "Noto Sans SC", sans-serif;
+  --head-font: "STXihei", "华文细黑", "Noto Sans SC", sans-serif;
+  --body-font: "Noto Sans SC", "Microsoft YaHei", sans-serif;
+  --num-font: Georgia, "Times New Roman", serif;
+}
+/* 细黑靠字重分层：姓名压到常规字重，避免轻字族被加粗后发灰 */
+.name { font-weight: 400; }

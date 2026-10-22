@@ -1,0 +1,7 @@
+/* 黑标宋文：无衬线标题 + 衬线正文，编辑部式反差，适合内容型简历 */
+:root {
+  --display-font: "Microsoft YaHei", "PingFang SC", sans-serif;
+  --head-font: "Microsoft YaHei", "PingFang SC", sans-serif;
+  --body-font: "Noto Serif SC", "Songti SC", serif;
+  --num-font: Georgia, "Times New Roman", serif;
+}

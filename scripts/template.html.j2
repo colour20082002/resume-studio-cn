@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>{{ d.name }} · 个人简历</title>
+<style>
+{{ base_css | safe }}
+</style>
+<style>
+{{ layout_css | safe }}
+</style>
+<style>
+{{ palette_css | safe }}
+</style>
+<style>
+{{ font_css | safe }}
+</style>
+</head>
+<body class="layout-{{ layout }} palette-{{ palette }}">
+{% include "layouts/" ~ layout ~ ".html.j2" %}
+</body>
+</html>

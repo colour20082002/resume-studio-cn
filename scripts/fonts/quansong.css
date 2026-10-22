@@ -1,0 +1,7 @@
+/* 全宋典雅：中宋标题 + 宋体正文，笔画厚重，正式稳重 */
+:root {
+  --display-font: "STZhongsong", "华文中宋", "Noto Serif SC", serif;
+  --head-font: "STZhongsong", "华文中宋", "Noto Serif SC", serif;
+  --body-font: "Noto Serif SC", "Songti SC", serif;
+  --num-font: Georgia, "Times New Roman", serif;
+}

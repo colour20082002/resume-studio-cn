@@ -1,0 +1,33 @@
+/* 墨黑：极简黑白灰 */
+:root {
+  --ink: #111111;
+  --text: #3D3D3D;
+  --muted: #777777;
+  --contact: #444444;
+  --accent: #111111;
+  --accent-muted: #A8A8A8;
+  --rule: #E2E2E2;
+  --date-color: #555555;
+  --marker: #111111;
+  --meta-sep: #CCCCCC;
+  --tint: #F3F3F3;
+  --panel-bg: #1B2228;
+  --panel-ink: #F5F3EE;
+  --panel-muted: #B9BCBE;
+  --panel-line: rgba(255, 255, 255, .26);
+  --name-size: 30pt;
+  --name-ls: .5pt;
+  --name-weight: 700;
+  --intent-size: 10pt;
+  --label-size: 8.6pt;
+  --body-size: 10pt;
+  --line: 1.84;
+  --sec-top: 19pt;
+  --sec-bot: 8pt;
+  --entry-gap: 14pt;
+  --bullet-gap: 2.6pt;
+  --comp-gap: 2.6pt;
+  --head-rule-h: 1.6pt;
+  --head-rule-gap: 14pt;
+  --screen-bg: #ECECEC;
+}
