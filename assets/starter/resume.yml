@@ -88,3 +88,12 @@ certificates:
 - 全国计算机等级考试二级（MS Office）
 - 普通话水平测试二级甲等
 - C1 机动车驾驶证
+sections:
+  intent: true
+  meta: true
+  contact: true
+  summary: true
+  competencies: true
+  experience: true
+  education: true
+  certificates: true

@@ -5,9 +5,9 @@
 ![License](https://img.shields.io/badge/license-MIT-green)
 ![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen)
 
-> 把简历写成一份 YAML，生成 216 种排版组合的中文简历，同时输出 A4 PDF 与可编辑 Word。
+> 把简历写成一份 YAML，生成 360 种排版组合的中文简历，同时输出 A4 PDF 与可编辑 Word。
 
-**Resume Studio CN** 是一个内容与样式彻底分离的中文简历流水线：一份 `resume.yml`，6 种版式 × 6 种配色 × 6 组字体自由组合，附带网页可视化编辑器、页数与关键词校验，以及按 JD（职位描述）定制简历的完整工作流。
+**Resume Studio CN** 是一个内容与样式彻底分离的中文简历流水线：一份 `resume.yml`，10 种版式 × 6 种配色 × 6 组字体自由组合，附带网页可视化编辑器、页数与关键词校验，以及按 JD（职位描述）定制简历的完整工作流。
 
 排版、渲染、校验、导出全部在本地完成，脚本本身不发起任何网络请求，也不需要账号或在线服务。简历的撰写与按 JD 改写由你所使用的 Agent / 大模型客户端完成，这部分内容会按该服务商的隐私政策发送给模型；不接 AI 也能纯手工使用全部排版与导出功能。
 
@@ -16,12 +16,40 @@
 ## 功能特性
 
 - **一份内容，多种成品**：`resume.yml` 是唯一内容源，改内容不用碰 HTML/CSS。
-- **216 种排版组合**：6 版式 × 6 配色 × 6 组字体，任意组合即时预览。
+- **360 种排版组合**：10 版式 × 6 配色 × 6 组字体，任意组合即时预览。
 - **PDF + Word 双产出**：Edge 无头打印出精确 A4 分页；python-docx 出可继续编辑、可贴证件照的 Word。
 - **按 JD 定制**：从职位描述提取硬性要求、职责动词、结果指标，映射到真实经历后重排顺序与措辞，不改事实。
 - **自动校验**：YAML 结构、PDF 页数、每页首尾行、JD 关键词命中，交付前给出 PASS / FAIL。
 - **网页编辑器**：浏览器内改内容、切版式/配色/字体、实时预览、上传头像、一键导出。
+- **模块可显隐**：求职意向、基本信息、联系方式，以及概述、核心能力、工作经历、教育经历、证书资质逐项开关；隐藏后版式自动收拢、章节编号顺延。
 - **Agent Skill**：可直接放入 Trae 等支持 Skill 的 Agent 环境，用自然语言驱动整套流程。
+
+## 整体能力
+
+一份 `resume.yml` 管内容，`layouts/` 管版式，`palettes/` 管配色，`fonts/` 管字体，四者互不干扰：
+
+| 层 | 内容 | 换掉它会发生什么 |
+| --- | --- | --- |
+| 内容 | 姓名、意向、概述、能力、经历、教育、证书 | 所有版式同步更新 |
+| 版式 | 经典 / 左栏 / 色带 / 时间轴 / 卡片 / 居中 / 表格式 / 右栏 / 极简 / 日期栏 | 骨架与分页改变，内容不动 |
+| 配色 | 墨黑 / 鎏金 / 黛蓝 / 绛红 / 墨绿 / 烟灰 | 只换 CSS 变量，布局不变 |
+| 字体 | 宋黑对照 / 全宋典雅 / 雅黑现代 / 等线清爽 / 黑标宋文 / 细黑雅致 | 只换字族与字重，字号不变 |
+
+产出三条路：Edge 无头打印的 A4 PDF（精确分页）、python-docx 生成的可编辑 Word、网页编辑器里的实时预览。
+
+## 用 Agent 使用
+
+本仓库同时是一个 Agent Skill（`SKILL.md`）。把整个目录放进项目的 `.trae/skills/resume-studio/`，或放进 Agent 的全局 Skill 目录，之后说人话就行——Agent 会自己调用 `init.py` / `build.py` / `check.py` / `editor.py`，不用你记命令。
+
+| 你说 | Agent 会做 |
+| --- | --- |
+| 「帮我做一份简历，投售后服务管理」 | 初始化内容目录 → 按 `references/writing-rules.md` 逐项确认经历 → 写 `resume.yml` → 选版式配色 → 出 PDF → 跑校验 |
+| 「按这个 JD 改简历：<粘贴职位描述>」 | 提取硬性要求与关键词 → 在真实经历里做证据映射 → 重排顺序、对齐措辞 → `check.py --keywords` 确认命中 |
+| 「换成表格式 + 黛蓝 + 宋黑对照」 | 只改组合参数重渲，内容不动 |
+| 「核心能力和证书先不显示」 | 写 `sections.competencies/certificates: false`，版式自动收拢、章节编号顺延 |
+| 「压到 2 页」「导出一份 Word」 | 精简条目、调整 `pages` 后重跑校验 / 生成 `.docx` |
+
+Agent 只整理 `resume.yml` 里的真实经历与措辞，不编造公司、时间与数字；排版、校验、导出都在本机完成。不接 Agent 也能纯手工按下面的命令操作，能力完全一致。
 
 ## 环境要求
 
@@ -47,7 +75,7 @@ pip install pyyaml jinja2 python-docx pillow pypdf
 py -3 scripts/init.py --root "D:\resume"
 
 # 2. 打开 resume.yml，把示例内容换成你的真实经历
-#    然后生成 6 份母版 PDF + 一份 Word
+#    然后生成 10 份母版 PDF + 一份 Word
 py -3 scripts/build.py all --root "D:\resume"
 
 # 3. 校验内容体检、页数与关键词（页数默认读 resume.yml 的 pages，缺省 1 页）
@@ -69,6 +97,10 @@ D:\resume\
 ├── 个人简历-时间轴-绛红-宋黑对照.pdf
 ├── 个人简历-卡片-鎏金-等线清爽.pdf
 ├── 个人简历-居中-烟灰-全宋典雅.pdf
+├── 个人简历-表格式-黛蓝-宋黑对照.pdf
+├── 个人简历-右栏-墨绿-雅黑现代.pdf
+├── 个人简历-极简-墨黑-细黑雅致.pdf
+├── 个人简历-日期栏-鎏金-黑标宋文.pdf
 ├── 个人简历.docx
 └── build\                 # 中间 HTML 与预览截图
 ```
@@ -89,6 +121,15 @@ contact:
   - zhouyutong@example.com
 show_photo: true                    # 是否显示证件照
 pages: 1                            # 期望页数，默认 1（一页优先）；0 表示不校验
+sections:                           # 模块显隐，缺省全部显示
+  intent: true                      # 求职意向
+  meta: true                        # 基本信息（性别/年龄/城市等）
+  contact: true                     # 联系方式
+  summary: true
+  competencies: true
+  experience: true
+  education: true
+  certificates: true
 
 summary: 8 年行政与运营经验……        # 一段式概述，80–140 字
 
@@ -132,10 +173,10 @@ certificates:
 | 命令 | 作用 |
 | --- | --- |
 | `py -3 scripts/init.py --root <目录>` | 初始化内容目录；已存在 `resume.yml` 时拒绝覆盖，加 `--force` 才覆盖 |
-| `py -3 scripts/build.py all --root <目录>` | 生成 6 份母版 PDF + Word |
-| `py -3 scripts/build.py pdf --root <目录>` | 只生成 6 份 PDF |
+| `py -3 scripts/build.py all --root <目录>` | 生成 10 份母版 PDF + Word |
+| `py -3 scripts/build.py pdf --root <目录>` | 只生成 10 份 PDF |
 | `py -3 scripts/build.py docx --root <目录>` | 只生成 Word |
-| `py -3 scripts/build.py png --root <目录>` | 生成 6 张整页预览截图（`build/preview-*.png`） |
+| `py -3 scripts/build.py png --root <目录>` | 生成 10 张整页预览截图（`build/preview-*.png`） |
 | `py -3 scripts/check.py --root <目录> [--pages N] [--keywords "a,b,c"]` | 校验结构 / 内容体检 / 页数 / 每页首尾行 / 关键词 |
 | `py -3 scripts/editor.py --root <目录> [--port 8765] [--no-browser]` | 启动网页编辑器 |
 
@@ -157,6 +198,10 @@ certificates:
 | `timeline` | 时间轴 | 经历连续、跨度长，强调成长线 |
 | `grid` | 卡片 | 转行、技能型岗位、内容偏少 |
 | `centered` | 居中 | 精简一页、管理岗，风格克制 |
+| `table` | 表格式 | 银行/国企/外企，信息条目多、要求整齐 |
+| `rightbar` | 右栏 | 技能与证书突出，左侧留给经历正文 |
+| `minimal` | 极简 | 设计/研发/互联网，弱装饰、重留白 |
+| `datebar` | 日期栏 | 时间跨度长，左侧日期列形成竖向节拍 |
 
 **配色**（`scripts/palettes/`）：墨黑 `#1B2228`、鎏金 `#C0A265`、黛蓝 `#22405F`、绛红 `#7B2E3C`、墨绿 `#2E5A48`、烟灰 `#6C7681`。配色只改 CSS 变量，不改变布局。
 
@@ -200,6 +245,7 @@ py -3 scripts/editor.py --root "D:\resume" --port 8765
 打开 `http://127.0.0.1:8765/`：
 
 - 左侧改基本信息、概述、能力、经历、教育、证书；
+- 求职意向、基本信息、联系方式各带一个「显示」开关；各章节标题右侧同样有开关，取消勾选即隐藏该模块，保存后 PDF / Word 同步生效，章节编号自动顺延；
 - 顶部切换版式 / 配色 / 字体，右侧实时预览当前组合的 PDF；
 - 可上传证件照（自动纠正方向、限宽 720），可一键隐藏/显示头像；
 - 「应用更改」只写入 `resume.yml`（自动备份 `resume.yml.bak`）并刷新预览；
@@ -219,7 +265,7 @@ resume-studio-cn/
 ├── references/
 │   ├── writing-rules.md          # 内容写作与中文排版规范
 │   ├── tailoring.md              # 按 JD 定制的流程与边界
-│   ├── layout-guide.md           # 6 种版式与分页规则
+│   ├── layout-guide.md           # 10 种版式与分页规则
 │   ├── typography.md             # 字体层级、6 组字体、6 种配色
 │   └── checklist.md              # 交付前检查清单
 └── scripts/
@@ -230,7 +276,7 @@ resume-studio-cn/
     ├── editor.html
     ├── base.css                  # 公共骨架（@page 尺寸与边距）
     ├── template.html.j2          # 外壳模板
-    ├── layouts/                  # 6 种版式 html + css
+    ├── layouts/                  # 10 种版式 html + css
     ├── palettes/                 # 6 种配色（仅 CSS 变量）
     └── fonts/                    # 6 组字体（仅字体变量）
 ```
@@ -273,12 +319,6 @@ resume-studio-cn/
 - **字体文件只管字体**：字号与字重归配色文件，避免同一属性两处定义。
 - **不做自动投递**：只负责把简历做好，投递由用户自己完成。
 - **只校验能验证的东西**：页数、空页、每页首尾行、关键词命中；审美与措辞仍需人看。
-
-## 在 Trae 中作为 Skill 使用
-
-本仓库同时是一个 Agent Skill。克隆到项目的 `.trae/skills/resume-studio/` 或全局 Skill 目录后，在 Trae 中直接说「帮我改简历」「按这个 JD 定制」「导出 PDF」即可触发，Agent 会按 `SKILL.md` 的流程调用 `init.py` / `build.py` / `check.py` / `editor.py`。
-
-不使用 Agent 也可以完全按上面的命令手动操作，两者能力一致。
 
 ## 贡献
 

@@ -4,30 +4,41 @@
       <td class="sp-side">
         {% if d.get('show_photo', true) %}<div class="sp-photo"><img src="photo.png" alt=""></div>{% endif %}
         <div class="sp-name">{{ d.name }}</div>
-        <div class="sp-intent">{{ d.intent }}</div>
+{% if show.intent %}        <div class="sp-intent">{{ d.intent }}</div>{% endif %}
 
-        <h3 class="sp-h">联系方式</h3>
+{% if show.meta %}        <h3 class="sp-h">基本信息</h3>
         <ul class="sp-list">
           {% for m in d.meta %}<li>{{ m }}</li>{% endfor %}
-          {% for c in d.contact %}<li>{{ c }}</li>{% endfor %}
-        </ul>
+        </ul>{% endif %}
 
+{% if show.contact %}        <h3 class="sp-h">联系方式</h3>
+        <ul class="sp-list">
+          {% for c in d.contact %}<li>{{ c }}</li>{% endfor %}
+        </ul>{% endif %}
+
+        {% if show.competencies %}
         <h3 class="sp-h">核心能力</h3>
         <ul class="sp-comp">
           {% for c in d.competencies %}
           <li><span class="k">{{ c.label }}</span><span class="v">{{ c.text }}</span></li>
           {% endfor %}
         </ul>
+        {% endif %}
 
+        {% if show.certificates %}
         <h3 class="sp-h">证书资质</h3>
         <ul class="sp-list">
           {% for c in d.certificates %}<li>{{ c }}</li>{% endfor %}
         </ul>
+        {% endif %}
       </td>
       <td class="sp-main">
+        {% if show.summary %}
         <h2 class="sec"><span class="zh">自我概述</span><span class="en">SUMMARY</span><span class="line"></span></h2>
         <p class="summary">{{ d.summary }}</p>
+        {% endif %}
 
+        {% if show.experience %}
         <h2 class="sec"><span class="zh">工作经历</span><span class="en">EXPERIENCE</span><span class="line"></span></h2>
         {% for e in d.experience %}
         <section class="entry">
@@ -40,13 +51,16 @@
           </ul>
         </section>
         {% endfor %}
+        {% endif %}
 
+        {% if show.education %}
         <h2 class="sec"><span class="zh">教育经历</span><span class="en">EDUCATION</span><span class="line"></span></h2>
         {% for e in d.education %}
         <div class="erow"><span class="co">{{ e.school }}</span><span class="date">{{ e.date }}</span></div>
         <div class="role">{{ e.major }}<span class="sep">/</span>{{ e.degree }}</div>
         <p class="edu-detail">{{ e.detail }}</p>
         {% endfor %}
+        {% endif %}
       </td>
     </tr>
   </table>

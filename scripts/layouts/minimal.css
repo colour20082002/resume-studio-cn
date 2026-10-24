@@ -1,0 +1,29 @@
+/* 极简细线：无大色块，细线分隔，留白与英文小标为主 */
+@page { size: A4; margin: 16mm 18mm 14mm 18mm; }
+
+.mn-head { border-bottom: 1.1pt solid var(--ink); padding-bottom: 10pt; }
+.mn-top { display: flex; align-items: flex-end; justify-content: space-between; }
+.mn-page .name { font-size: 27pt; font-weight: var(--name-weight, 600); letter-spacing: 1.2pt; }
+.mn-intent {
+  margin-top: 6pt; font-family: var(--head-font); font-size: 10.2pt;
+  color: var(--muted); letter-spacing: .12em;
+}
+.mn-head .meta { margin-top: 5pt; }
+.mn-photo { flex: 0 0 auto; margin-left: 16pt; }
+.mn-photo img {
+  display: block; width: 23mm; height: 30mm; object-fit: cover;
+  border: .5pt solid var(--rule); filter: grayscale(1);
+}
+
+.mn-page .sec {
+  margin: 17pt 0 7pt; padding-bottom: 3.5pt;
+  border-bottom: .5pt solid var(--rule);
+}
+.mn-page .sec .line { display: none; }
+.mn-page .sec .en { margin-left: auto; letter-spacing: .3em; }
+.mn-page .sec .zh { font-size: 10.2pt; letter-spacing: .22em; }
+
+.mn-page .summary { color: var(--text); }
+.mn-page .comp li { padding: 2.4pt 0; }
+.mn-page .cert { border-top: .5pt solid var(--rule); }
+.mn-page .bullets li::before { border-radius: 0; width: 3.2pt; height: .8pt; top: .86em; }

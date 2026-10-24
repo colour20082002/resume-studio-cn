@@ -48,7 +48,14 @@
     color:var(--gold); display:flex; align-items:center; gap:8px;
   }
   .card > h2::after { content:""; flex:1; height:0; border-top:1px solid var(--line); }
+  .sec-toggle {
+    order:1; display:flex; align-items:center; gap:5px; font-size:11.5px; font-weight:400;
+    letter-spacing:0; color:#8A8175; white-space:nowrap; cursor:pointer;
+  }
+  .sec-toggle input { accent-color:#C0A265; margin:0; }
+  .card.off { opacity:.55; }
   .row { display:grid; grid-template-columns:auto 1fr; align-items:center; gap:10px; margin-bottom:9px; }
+  .row.row-sec { grid-template-columns:auto 1fr auto; }
   .row > label { color:#6C7177; font-size:12.5px; white-space:nowrap; }
   input[type=text], textarea {
     width:100%; padding:6px 9px; font-family:inherit; font-size:12.5px; line-height:1.7;
@@ -162,22 +169,33 @@ function getPath(path) {
 }
 
 /* ---------------- 表单渲染 ---------------- */
-function field(label, path, value, big) {
+function field(label, path, value, big, sec) {
   const tag = big
     ? `<textarea data-path="${path}" rows="${big}">${esc(value)}</textarea>`
     : `<input type="text" data-path="${path}" value="${esc(value)}">`;
-  return `<div class="row"><label>${label}</label>${tag}</div>`;
+  return `<div class="row${sec ? " row-sec" : ""}"><label>${label}</label>${tag}${sec ? secToggle(sec) : ""}</div>`;
 }
 
-function textareaRow(label, arrName, list) {
-  return `<div class="row" style="align-items:start">
+function textareaRow(label, arrName, list, sec) {
+  return `<div class="row${sec ? " row-sec" : ""}" style="align-items:start">
     <label style="padding-top:6px">${label}</label>
     <div><textarea data-arr="${arrName}" rows="3">${esc(list.join("\n"))}</textarea>
-    <div class="hint">一行一条</div></div></div>`;
+    <div class="hint">一行一条</div></div>
+    ${sec ? secToggle(sec) : ""}</div>`;
+}
+
+function secToggle(key) {
+  return `<label class="sec-toggle"><input type="checkbox" data-sec="${key}"
+    ${data.sections[key] ? "checked" : ""}>显示</label>`;
 }
 
 function render() {
   const d = data;
+  data.sections = Object.assign(
+    { intent: true, meta: true, contact: true,
+      summary: true, competencies: true, experience: true, education: true, certificates: true },
+    data.sections || {});
+  const card = (key) => `card${data.sections[key] ? "" : " off"}`;
   let html = "";
 
   html += `<section class="card"><h2>基本信息</h2>
@@ -192,16 +210,16 @@ function render() {
       <input type="file" id="photoFile" accept="image/*" hidden onchange="uploadPhoto(this)">
     </div>
     ${field("姓名", "name", d.name)}
-    ${field("求职意向", "intent", d.intent)}
-    ${textareaRow("基本信息", "meta", d.meta || [])}
-    ${textareaRow("联系方式", "contact", d.contact || [])}
+    ${field("求职意向", "intent", d.intent, 0, "intent")}
+    ${textareaRow("基本信息", "meta", d.meta || [], "meta")}
+    ${textareaRow("联系方式", "contact", d.contact || [], "contact")}
   </section>`;
 
-  html += `<section class="card"><h2>自我概述</h2>
+  html += `<section class="${card("summary")}"><h2>自我概述 ${secToggle("summary")}</h2>
     ${field("", "summary", d.summary, 5)}
   </section>`;
 
-  html += `<section class="card"><h2>核心能力</h2>`;
+  html += `<section class="${card("competencies")}"><h2>核心能力 ${secToggle("competencies")}</h2>`;
   (d.competencies || []).forEach((c, i) => {
     html += `<div class="bullet" style="grid-template-columns:110px 1fr auto">
       <input type="text" data-path="competencies.${i}.label" value="${esc(c.label)}">
@@ -211,7 +229,7 @@ function render() {
   });
   html += `<button class="add" data-act="add" data-list="competencies">+ 增加能力项</button></section>`;
 
-  html += `<section class="card"><h2>工作经历</h2>`;
+  html += `<section class="${card("experience")}"><h2>工作经历 ${secToggle("experience")}</h2>`;
   (d.experience || []).forEach((e, i) => {
     html += `<div class="item">
       <div class="item-head"><span class="idx">经历 ${i + 1}</span><span class="sp"></span>
@@ -235,7 +253,7 @@ function render() {
   });
   html += `<button class="add" data-act="add" data-list="experience">+ 增加一段经历</button></section>`;
 
-  html += `<section class="card"><h2>教育经历</h2>`;
+  html += `<section class="${card("education")}"><h2>教育经历 ${secToggle("education")}</h2>`;
   (d.education || []).forEach((e, i) => {
     html += `<div class="item">
       <div class="item-head"><span class="idx">教育 ${i + 1}</span><span class="sp"></span>
@@ -251,7 +269,7 @@ function render() {
   });
   html += `<button class="add" data-act="add" data-list="education">+ 增加教育经历</button></section>`;
 
-  html += `<section class="card"><h2>证书资质</h2>
+  html += `<section class="${card("certificates")}"><h2>证书资质 ${secToggle("certificates")}</h2>
     ${textareaRow("证书", "certificates", d.certificates || [])}
   </section>`;
 
@@ -263,6 +281,15 @@ $("#form").addEventListener("input", (ev) => {
   const el = ev.target;
   if (el.dataset.path) setPath(el.dataset.path, el.value);
   else if (el.dataset.arr) data[el.dataset.arr] = el.value.split("\n").map((s) => s.trim()).filter(Boolean);
+});
+
+/* 模块显隐：勾选后立即写入 resume.yml 并刷新预览 */
+$("#form").addEventListener("change", (ev) => {
+  const box = ev.target.closest("input[data-sec]");
+  if (!box) return;
+  data.sections[box.dataset.sec] = box.checked;
+  render();
+  applyChanges();
 });
 
 $("#form").addEventListener("click", (ev) => {

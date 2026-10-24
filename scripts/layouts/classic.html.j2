@@ -3,29 +3,34 @@
   <header class="head">
     <div class="head-main">
       <h1 class="name">{{ d.name }}</h1>
-      <div class="intent"><em>求职意向</em>{{ d.intent }}</div>
-      <ul class="meta">
+{% if show.intent %}      <div class="intent"><em>求职意向</em>{{ d.intent }}</div>{% endif %}
+{% if show.meta %}      <ul class="meta">
         {% for m in d.meta %}<li>{{ m }}</li>{% endfor %}
-      </ul>
-      <ul class="meta meta-contact">
+      </ul>{% endif %}
+{% if show.contact %}      <ul class="meta meta-contact">
         {% for c in d.contact %}<li>{{ c }}</li>{% endfor %}
-      </ul>
+      </ul>{% endif %}
     </div>
 {% if d.get('show_photo', true) %}<div class="head-photo"><img src="photo.png" alt=""></div>{% endif %}
   </header>
   <div class="head-rule"></div>
 
-  <h2 class="sec"><span class="num">01</span><span class="zh">自我概述</span><span class="en">SUMMARY</span><span class="line"></span></h2>
+{% if show.summary %}
+  <h2 class="sec"><span class="num">{{ n.summary }}</span><span class="zh">自我概述</span><span class="en">SUMMARY</span><span class="line"></span></h2>
   <p class="summary">{{ d.summary }}</p>
+{% endif %}
 
-  <h2 class="sec"><span class="num">02</span><span class="zh">核心能力</span><span class="en">COMPETENCIES</span><span class="line"></span></h2>
+{% if show.competencies %}
+  <h2 class="sec"><span class="num">{{ n.competencies }}</span><span class="zh">核心能力</span><span class="en">COMPETENCIES</span><span class="line"></span></h2>
   <ul class="comp">
     {% for c in d.competencies %}
     <li><span class="k">{{ c.label }}</span><span class="v">{{ c.text }}</span></li>
     {% endfor %}
   </ul>
+{% endif %}
 
-  <h2 class="sec"><span class="num">03</span><span class="zh">工作经历</span><span class="en">EXPERIENCE</span><span class="line"></span></h2>
+{% if show.experience %}
+  <h2 class="sec"><span class="num">{{ n.experience }}</span><span class="zh">工作经历</span><span class="en">EXPERIENCE</span><span class="line"></span></h2>
   {% for e in d.experience %}
   <section class="entry">
     <div class="erow"><span class="co">{{ e.company }}</span><span class="date">{{ e.date }}</span></div>
@@ -37,13 +42,19 @@
     </ul>
   </section>
   {% endfor %}
+{% endif %}
 
-  <h2 class="sec"><span class="num">04</span><span class="zh">教育经历</span><span class="en">EDUCATION</span><span class="line"></span></h2>
+{% if show.education %}
+  <h2 class="sec"><span class="num">{{ n.education }}</span><span class="zh">教育经历</span><span class="en">EDUCATION</span><span class="line"></span></h2>
   {% for e in d.education %}
   <div class="erow"><span class="co">{{ e.school }}</span><span class="date">{{ e.date }}</span></div>
   <div class="role">{{ e.major }}<span class="sep">/</span>{{ e.degree }}</div>
   <p class="edu-detail">{{ e.detail }}</p>
   {% endfor %}
+{% endif %}
+
+{% if show.certificates %}
   <div class="cert"><span class="k">证书资质</span><span class="v">{% for c in d.certificates %}<span>{{ c }}</span>{% endfor %}</span></div>
+{% endif %}
 
 </div>

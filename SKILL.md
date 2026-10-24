@@ -1,6 +1,6 @@
 ---
 name: resume-studio
-description: 中文简历制作与优化工作台。把简历内容写成 resume.yml，用 6 种版式 × 6 种配色 × 6 组字体生成 A4 PDF 与可编辑 Word，并附带网页可视化编辑器。用户要做简历、改简历、按 JD 定制、调排版/配色/字体、导出 PDF/Word 时使用。
+description: 中文简历制作与优化工作台。把简历内容写成 resume.yml，用 10 种版式 × 6 种配色 × 6 组字体生成 A4 PDF 与可编辑 Word，并附带网页可视化编辑器。用户要做简历、改简历、按 JD 定制、调排版/配色/字体、导出 PDF/Word 时使用。
 ---
 
 # Resume Studio
@@ -20,7 +20,7 @@ resume-studio/
     ├── check.py                  # 结构 + 页数 + 关键词校验
     ├── editor.py / editor.html   # 网页编辑器
     ├── base.css / template.html.j2
-    ├── layouts/                  # 6 种版式
+    ├── layouts/                  # 10 种版式
     ├── palettes/                 # 6 种配色
     └── fonts/                    # 6 组字体
 ```
@@ -35,7 +35,7 @@ resume-studio/
 # 1. 初始化内容目录（不覆盖已有 resume.yml）
 py -3 scripts/init.py --root "D:\resume"
 
-# 2. 编辑 resume.yml 后生成 6 份母版 PDF + Word
+# 2. 编辑 resume.yml 后生成 10 份母版 PDF + Word
 py -3 scripts/build.py all --root "D:\resume"
 
 # 只出 PDF / 只出 Word / 出预览截图
@@ -62,6 +62,7 @@ meta: [性别 · 年龄, 政治面貌, 城市, 到岗时间]
 contact: [手机, 邮箱]
 show_photo: true
 pages: 1                             # 期望页数，一页优先；0 不校验
+sections: {intent: true, meta: true, contact: true, summary: true, competencies: true, experience: true, education: true, certificates: true}
 summary: 一段式自我概述
 competencies: [{label, text}]        # 4–6 条
 experience: [{company, date, role, industry, bullets: [{label, text}]}]
@@ -98,6 +99,6 @@ certificates: [证书]
 ## 参考文件
 - `references/writing-rules.md` — bullet/summary/能力条目的写法与中文排版规范
 - `references/tailoring.md` — 按 JD 定制的流程、评分与边界
-- `references/layout-guide.md` — 6 种版式的适用场景与分页规则
+- `references/layout-guide.md` — 10 种版式的适用场景与分页规则
 - `references/typography.md` — 字体层级变量、6 组字体、6 种配色
 - `references/checklist.md` — 交付前检查清单

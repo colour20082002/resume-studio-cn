@@ -32,7 +32,10 @@
 .bn-page .sec .en { margin-left: 8pt; }
 .bn-page .sec .line { display: none; }
 
-.comp-2 { display: grid; grid-template-columns: 1fr 1fr; column-gap: 14pt; }
-.comp-2 li { display: block; padding: 1.6pt 0; }
-.comp-2 .k { display: inline; margin-right: 4pt; font-size: 9.2pt; }
-.comp-2 .v { display: inline; font-size: 9pt; }
+.comp-2 { display: grid; grid-template-columns: 1fr 1fr; column-gap: 14pt; align-content: start; }
+.comp-2 li {
+  display: grid; grid-template-columns: 4.6em 1fr; column-gap: 6pt;
+  align-items: baseline; padding: 1.6pt 0;
+}
+.comp-2 .k { display: block; margin-right: 0; font-size: 9.2pt; }
+.comp-2 .v { display: block; font-size: 9pt; }

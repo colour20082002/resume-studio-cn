@@ -40,6 +40,10 @@ LAYOUTS = {
     "timeline": ("时间轴", "timeline.html.j2", "timeline.css"),
     "grid": ("卡片", "grid.html.j2", "grid.css"),
     "centered": ("居中", "centered.html.j2", "centered.css"),
+    "table": ("表格式", "table.html.j2", "table.css"),
+    "rightbar": ("右栏", "rightbar.html.j2", "rightbar.css"),
+    "minimal": ("极简", "minimal.html.j2", "minimal.css"),
+    "datebar": ("日期栏", "datebar.html.j2", "datebar.css"),
 }
 
 # 配色：key -> (中文名, 配色 css, 主色，供编辑器色块使用)
@@ -62,7 +66,28 @@ FONTS = {
     "lightsans": ("细黑雅致", "lightsans.css"),
 }
 
-# 默认 6 个组合（版式, 配色, 字体），也是母版批量生成的清单
+# 页首信息开关（不占章节编号）；姓名称谓始终显示
+HEADER_KEYS = ("intent", "meta", "contact")
+# 可显隐的模块；证书资质单独控制、不占编号
+SECTION_KEYS = ("summary", "competencies", "experience", "education")
+
+
+def section_flags(data: dict) -> dict:
+    raw = data.get("sections") or {}
+    keys = HEADER_KEYS + SECTION_KEYS + ("certificates",)
+    return {k: raw.get(k, True) is not False for k in keys}
+
+
+def section_numbers(flags: dict) -> dict:
+    numbers, seq = {}, 0
+    for key in SECTION_KEYS:
+        if flags[key]:
+            seq += 1
+            numbers[key] = f"{seq:02d}"
+    return numbers
+
+
+# 默认 10 个组合（版式, 配色, 字体），也是母版批量生成的清单
 MATCHES = [
     ("classic", "ink", "songhei"),
     ("sidebar", "navy", "songhei"),
@@ -70,6 +95,10 @@ MATCHES = [
     ("timeline", "burgundy", "songhei"),
     ("grid", "gold", "dengxian"),
     ("centered", "slate", "quansong"),
+    ("table", "navy", "songhei"),
+    ("rightbar", "forest", "yahei"),
+    ("minimal", "ink", "lightsans"),
+    ("datebar", "gold", "editorial"),
 ]
 
 
@@ -83,8 +112,10 @@ def render_html(layout: str, palette: str, font: str) -> Path:
     if photo.exists():
         (BUILD / "photo.png").write_bytes(photo.read_bytes())
     d = {**DATA, "show_photo": bool(DATA.get("show_photo", True)) and photo.exists()}
+    show = section_flags(DATA)
     html = ENV.get_template("template.html.j2").render(
-        d=d, layout=layout, palette=palette, font=font,
+        d=d, show=show, n=section_numbers(show),
+        layout=layout, palette=palette, font=font,
         base_css=(SCRIPT_DIR / "base.css").read_text(encoding="utf-8"),
         layout_css=(SCRIPT_DIR / "layouts" / LAYOUTS[layout][2]).read_text(encoding="utf-8"),
         palette_css=(SCRIPT_DIR / "palettes" / PALETTES[palette][1]).read_text(encoding="utf-8"),
@@ -214,15 +245,19 @@ def make_docx() -> None:
     tblPr.append(cellMar)
     cell_l.paragraphs[0]._element.getparent().remove(cell_l.paragraphs[0]._element)
 
+    show = section_flags(DATA)
+
     p = para(cell=cell_l)
     run(p, DATA["name"], size=24, color=INK, bold=True)
-    p = para(space_after=1, cell=cell_l)
-    run(p, "求职意向 · " + DATA["intent"], size=9.5, color=INK)
-    meta = "   ·   ".join(DATA["meta"])
-    p = para(space_after=2, cell=cell_l)
-    run(p, meta, size=8.5, color=GRAY)
-    p = para(space_after=3, cell=cell_l)
-    run(p, "   ·   ".join(DATA["contact"]), size=8.5, color=RGBColor(0x44, 0x44, 0x44))
+    if show["intent"]:
+        p = para(space_after=1, cell=cell_l)
+        run(p, "求职意向 · " + DATA["intent"], size=9.5, color=INK)
+    if show["meta"]:
+        p = para(space_after=2, cell=cell_l)
+        run(p, "   ·   ".join(DATA["meta"]), size=8.5, color=GRAY)
+    if show["contact"]:
+        p = para(space_after=3, cell=cell_l)
+        run(p, "   ·   ".join(DATA["contact"]), size=8.5, color=RGBColor(0x44, 0x44, 0x44))
 
     photo = ROOT / "photo.png"
     if DATA.get("show_photo", True) and photo.exists():
@@ -230,37 +265,43 @@ def make_docx() -> None:
         rp.alignment = WD_ALIGN_PARAGRAPH.RIGHT
         rp.add_run().add_picture(str(photo), width=Cm(2.5))
 
-    section("自我概述", "SUMMARY")
-    run(para(space_after=0), DATA["summary"], size=9)
+    if show["summary"]:
+        section("自我概述", "SUMMARY")
+        run(para(space_after=0), DATA["summary"], size=9)
 
-    section("核心能力", "COMPETENCIES")
-    for c in DATA["competencies"]:
-        p = para(space_after=1)
+    if show["competencies"]:
+        section("核心能力", "COMPETENCIES")
+        for c in DATA["competencies"]:
+            p = para(space_after=1)
+            p.paragraph_format.left_indent = Cm(0.42)
+            p.paragraph_format.first_line_indent = Cm(-0.42)
+            run(p, c["label"], size=9, color=INK, bold=True)
+            run(p, "　　" + c["text"], size=9)
+
+    if show["experience"]:
+        section("工作经历", "EXPERIENCE")
+        for e in DATA["experience"]:
+            right_row(e["company"], e["date"])
+            p = para(space_after=2)
+            run(p, f"{e['role']}  /  {e['industry']}", size=8.8, color=RGBColor(0x55, 0x55, 0x55))
+            for b in e["bullets"]:
+                bullet(b["label"], b["text"])
+            para(space_after=0, line=0.4).add_run("")
+
+    if show["education"]:
+        section("教育经历", "EDUCATION")
+        for e in DATA["education"]:
+            right_row(e["school"], e["date"])
+            p = para(space_after=1)
+            run(p, f"{e['major']}  /  {e['degree']}", size=8.8, color=RGBColor(0x55, 0x55, 0x55))
+            run(para(space_after=0), e["detail"], size=9)
+
+    if show["certificates"]:
+        p = para(space_after=0, space_before=5)
         p.paragraph_format.left_indent = Cm(0.42)
         p.paragraph_format.first_line_indent = Cm(-0.42)
-        run(p, c["label"], size=9, color=INK, bold=True)
-        run(p, "　　" + c["text"], size=9)
-
-    section("工作经历", "EXPERIENCE")
-    for e in DATA["experience"]:
-        right_row(e["company"], e["date"])
-        p = para(space_after=2)
-        run(p, f"{e['role']}  /  {e['industry']}", size=8.8, color=RGBColor(0x55, 0x55, 0x55))
-        for b in e["bullets"]:
-            bullet(b["label"], b["text"])
-        para(space_after=0, line=0.4).add_run("")
-
-    section("教育经历", "EDUCATION")
-    for e in DATA["education"]:
-        right_row(e["school"], e["date"])
-        p = para(space_after=1)
-        run(p, f"{e['major']}  /  {e['degree']}", size=8.8, color=RGBColor(0x55, 0x55, 0x55))
-        run(para(space_after=0), e["detail"], size=9)
-    p = para(space_after=0, space_before=5)
-    p.paragraph_format.left_indent = Cm(0.42)
-    p.paragraph_format.first_line_indent = Cm(-0.42)
-    run(p, "证书资质", size=9, color=INK, bold=True)
-    run(p, "　　" + "  |  ".join(DATA["certificates"]), size=9)
+        run(p, "证书资质", size=9, color=INK, bold=True)
+        run(p, "　　" + "  |  ".join(DATA["certificates"]), size=9)
 
     doc.save(DOCX_OUT)
 

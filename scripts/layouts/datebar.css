@@ -1,0 +1,22 @@
+/* 日期侧栏：左侧独立日期列与竖线，右侧公司、岗位与职责 */
+@page { size: A4; margin: 14mm 16mm 12mm 16mm; }
+
+.db-item {
+  display: grid; grid-template-columns: 60pt 1fr; column-gap: 9pt;
+  margin-bottom: 10pt;
+}
+.db-date {
+  padding: 1.5pt 8pt 0 0; text-align: right;
+  border-right: .8pt solid var(--rule);
+  font-family: var(--num-font); font-size: 8.5pt; line-height: 1.55;
+  color: var(--date-color); letter-spacing: .04em;
+}
+.db-body .co {
+  font-family: var(--head-font); font-size: 10.6pt; font-weight: 600;
+  color: var(--ink); letter-spacing: .03em;
+}
+.db-body .role { margin-top: 2pt; }
+.db-body .bullets { margin-top: 4pt; }
+.db-body .bullets li { margin-bottom: 2pt; }
+.db-body .edu-detail { margin-top: 3pt; }
+.db-page .cert { margin-top: 4pt; padding-top: 6pt; }

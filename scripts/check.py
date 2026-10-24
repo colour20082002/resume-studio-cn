@@ -73,7 +73,8 @@ def check_data(data: dict):
             if not str(e.get(key, "")).strip():
                 errs.append(f"education 第 {i} 条缺少 {key}")
 
-    if not data.get("certificates"):
+    show_cert = (data.get("sections") or {}).get("certificates", True) is not False
+    if show_cert and not data.get("certificates"):
         warns.append("certificates 为空，若无证书可删掉该字段")
 
     text = yaml.safe_dump(data, allow_unicode=True)
@@ -85,13 +86,17 @@ def check_data(data: dict):
 def check_style(data: dict):
     """内容体检：量化、动词、空话、日期、命名等，只提示不拦截。"""
     warns = []
-    summary = str(data.get("summary", "")).strip()
-    if len(summary) > 140:
-        warns.append(f"自我概述 {len(summary)} 字，建议压缩到 80–140 字")
-    elif len(summary) < 80:
-        warns.append(f"自我概述仅 {len(summary)} 字，建议补充到 80–140 字")
+    sections = data.get("sections") or {}
+    shown = lambda key: sections.get(key, True) is not False
 
-    jobs = data.get("experience") or []
+    summary = str(data.get("summary", "")).strip()
+    if shown("summary") and summary:
+        if len(summary) > 140:
+            warns.append(f"自我概述 {len(summary)} 字，建议压缩到 80–140 字")
+        elif len(summary) < 80:
+            warns.append(f"自我概述仅 {len(summary)} 字，建议补充到 80–140 字")
+
+    jobs = data.get("experience") or [] if shown("experience") else []
     bullets = [str(b.get("text", "")).strip()
                for e in jobs for b in (e.get("bullets") or [])]
 
@@ -136,7 +141,7 @@ def check_style(data: dict):
         prev_start, prev_end = start, end
 
     contact = " ".join(str(x) for x in (data.get("contact") or []))
-    if re.search(r"@(qq|163|126)\.com", contact, re.I):
+    if shown("contact") and re.search(r"@(qq|163|126)\.com", contact, re.I):
         warns.append("联系邮箱为个人邮箱，建议改用商务/专业邮箱")
     return warns
 

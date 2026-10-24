@@ -1,0 +1,49 @@
+/* 表格式：页首信息表格化，章节带色块标签，能力/经历按表格行分隔 */
+@page { size: A4; margin: 14mm 15mm 12mm 15mm; }
+
+.tb-head {
+  display: flex; flex-wrap: wrap; align-items: flex-start; justify-content: space-between;
+  border-top: 2pt solid var(--ink); border-bottom: .7pt solid var(--rule);
+  padding: 9pt 0 8pt;
+}
+.tb-id { flex: 1 1 auto; }
+.tb-page .name { font-size: 26pt; }
+.tb-intent {
+  margin-top: 5pt; font-family: var(--head-font); font-size: 10.4pt;
+  color: var(--accent); letter-spacing: .06em;
+}
+.tb-photo { flex: 0 0 auto; margin-left: 14pt; }
+.tb-photo img {
+  display: block; width: 24mm; height: 31mm; object-fit: cover;
+  border: .6pt solid var(--rule);
+}
+
+.tb-row {
+  flex: 0 0 100%; display: grid; grid-template-columns: 5.4em 1fr;
+  align-items: baseline; margin-top: 7pt; padding-top: 5pt;
+  border-top: .4pt solid var(--rule);
+}
+.tb-k {
+  font-family: var(--head-font); font-size: 8.6pt; font-weight: 600;
+  color: var(--accent); letter-spacing: .1em;
+}
+.tb-v { font-size: 9.2pt; color: var(--text); }
+.tb-v span + span::before { content: "｜"; margin: 0 6pt; color: var(--meta-sep, #D9D3C7); }
+
+.tb-page .sec {
+  background: var(--tint); border-left: 2.2pt solid var(--accent);
+  padding: 4pt 9pt; margin: 13pt 0 8pt;
+}
+.tb-page .sec .line { display: none; }
+.tb-page .sec .zh { font-size: 10.8pt; letter-spacing: .16em; }
+
+.tb-page .comp li {
+  border-bottom: .4pt solid var(--rule); padding: 3.4pt 3pt; align-items: baseline;
+}
+.tb-page .comp li:nth-child(odd) { background: rgba(0, 0, 0, .022); }
+.tb-page .comp li:last-child { border-bottom: none; }
+
+.tb-page .entry {
+  border-bottom: .4pt solid var(--rule); padding-bottom: 6pt; margin-bottom: 9pt;
+}
+.tb-page .entry:last-of-type { border-bottom: none; }
